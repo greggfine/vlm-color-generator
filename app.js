@@ -318,6 +318,26 @@ function downloadSVGasTextFile() {
   //   a.dispatchEvent(e);
 }
 
+const copyCodeBtn = document.getElementById("copy-code-btn");
+// const codeDisplay = document.getElementById("code");
+// codeDisplay.addEventListener("click", () => {
+copyCodeBtn.addEventListener("click", () => {
+  var r = document.createRange();
+  r.selectNode(document.getElementById("code"));
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(r);
+  document.execCommand("copy");
+  window.getSelection().removeAllRanges();
+});
+// function CopyToClipboard(id) {
+//   var r = document.createRange();
+//   r.selectNode(document.getElementById("code"));
+//   window.getSelection().removeAllRanges();
+//   window.getSelection().addRange(r);
+//   document.execCommand("copy");
+//   window.getSelection().removeAllRanges();
+// }
+
 // GREGG LOCAL STORAGE CODE
 // const getLocalStorageBtn = document.querySelector("#get-local-storage");
 // getLocalStorageBtn.addEventListener("click", () => {
