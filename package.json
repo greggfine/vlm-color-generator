@@ -6,7 +6,7 @@
   "homepage": "https://github.com/greggfine/vlm-color-generator",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"deploy": "gh-pages -d"
+	"deploy": "gh-pages -d ./"
   },
   "keywords": [],
   "author": "",
