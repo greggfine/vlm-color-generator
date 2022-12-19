@@ -1,66 +1,77 @@
+form {
+  margin-top: 30px;
+}
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 40px;
-    flex-direction: column;
-    font-family: "verdana";
-  }
-  h1 {
-    font-weight: bold;
-    font-size: 3rem;
-    letter-spacing: -4.5px;
-  }
-  form {
-    margin: 20px;
-  }
-  canvas {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-  }
-  #palette,
-  #complementary {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 80%;
-  }
-  
-  #palette div,
-  #complementary div {
-    height: 120px;
-    width: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  
-    /* create a little bit of contrast for the text */
-    mix-blend-mode: difference;
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-shadow: 1px 1px #333;
-  }
-  
-  #palette div,
-  #complementary div {
-    height: 120px;
-    width: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px;
+  flex-direction: column;
+  font-family: "verdana";
+}
+h1 {
+  font-weight: bold;
+  font-size: 3rem;
+  letter-spacing: -4.5px;
+}
+form {
+  margin: 20px;
+}
+canvas {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  max-width: 200px;
+}
+#palette,
+#palette-2,
+#complementary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 50%;
+}
 
-  /* .svg-img  path:nth-child(11) {
-	fill: #B23076;
-  }
-  .svg-img  path:nth-child(7) {
-	fill: #03A654;
-  }
-  .svg-img  path:nth-child(1) {
-	fill: orange;
-  }
-  .svg-img  path:nth-child(3) {
-	fill: orange;
-  } */
+#palette div,
+#palette-2 div,
+#complementary div {
+  height: 90px;
+  width: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  mix-blend-mode: difference;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px #333;
+}
+
+#palette div,
+#palette-2 div,
+#complementary div {
+  height: 90px;
+  width: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.code {
+  margin-top: 40px;
+  border: 2px solid #000;
+  height: 100px;
+  width: 500px;
+}
+
+.color-element:hover {
+  cursor: pointer;
+}
+#palette {
+  border: 1px solid red;
+  height: 200px;
+}
+#palette-2 {
+  border: 1px solid #000;
+  height: 200px;
+}
