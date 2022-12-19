@@ -5,6 +5,7 @@ let colorStop1 = document.querySelector("#color-stop-1");
 let colorStop2 = document.querySelector("#color-stop-2");
 const userSelectedColor1 = document.querySelector("#userselected-color-1");
 const userSelectedColor2 = document.querySelector("#userselected-color-2");
+const localStorageDisplay = document.querySelector("#code");
 
 const companies = [
   "Alkemy X",
@@ -18,6 +19,13 @@ currentCompany.textContent = companies[0];
 companySelector.addEventListener("change", (e) => {
   currentCompany.textContent = e.target.value;
 });
+getFromLocalStorage();
+
+function getFromLocalStorage() {
+  const clientA1 = localStorage.getItem("clientA1");
+  const clientA2 = localStorage.getItem("clientA2");
+  localStorageDisplay.textContent = `const colors = {clientA1: ${clientA1}, clientA2: ${clientA2}};`;
+}
 
 // Gregg Code: create empty array to store generated hexColors
 let hexColorArr = [];
@@ -52,20 +60,23 @@ const buildPalette = (colorsList) => {
       let selectedColor = e.target.textContent;
       userSelectedColor1.textContent = selectedColor;
       colorStop1.style.stopColor = selectedColor;
+      localStorage.setItem("clientA1", `"${userSelectedColor1.textContent}"`);
+      getFromLocalStorage();
     });
 
     colorElement2.addEventListener("click", (e) => {
       let selectedColor = e.target.textContent;
       userSelectedColor2.textContent = selectedColor;
       colorStop2.style.stopColor = selectedColor;
+      localStorage.setItem("clientA2", `"${userSelectedColor2.textContent}"`);
+      getFromLocalStorage();
     });
     paletteContainer.appendChild(colorElement);
     paletteContainer2.appendChild(colorElement2);
   }
   // localStorage.clear();
   colorArrFinal = Array.from(new Set(hexColorArr));
-  localStorage.setItem("clientA", colorArrFinal);
-  // console.log(Array.from(new Set(hexColorArr)))
+  //   localStorage.setItem("clientA", colorArrFinal);
 };
 
 //  Convert each pixel value ( number ) to hexadecimal ( string ) with base 16
@@ -283,12 +294,15 @@ function downloadSVGasTextFile() {
 }
 
 // GREGG LOCAL STORAGE CODE
-// const getLocalStorageBtn = document.querySelector("#getLocalStorage");
+// const getLocalStorageBtn = document.querySelector("#get-local-storage");
 // getLocalStorageBtn.addEventListener("click", () => {
 //   const clientA = localStorage.getItem("clientA");
 //   const splitClientA = clientA.split(",");
-//   const localStorageDisplay = document.querySelector("#localStorageDisplay");
 //   localStorageDisplay.textContent = `const colors = {clientA: [${splitClientA}]};`;
+//   const localStorageDisplay = document.querySelector("#code");
+// const clientA1 = localStorage.getItem("clientA1");
+// const clientA2 = localStorage.getItem("clientA2");
+// localStorageDisplay.textContent = `const colors = {clientA1: ${clientA1}, clientA2: ${clientA2}};`;
 // });
 
 /* ====================================================================== */
