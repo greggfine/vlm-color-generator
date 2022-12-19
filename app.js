@@ -20,6 +20,10 @@ currentCompany.textContent = companies[0];
 companySelector.addEventListener("change", (e) => {
   currentCompany.textContent = e.target.value;
   selectedCompany = e.target.value;
+  const color1 = localStorage.getItem(`${selectedCompany}1`);
+  const color2 = localStorage.getItem(`${selectedCompany}2`);
+  colorStop1.style.stopColor = JSON.parse(color1);
+  colorStop2.style.stopColor = JSON.parse(color2);
 });
 getFromLocalStorage();
 
@@ -76,24 +80,75 @@ const buildPalette = (colorsList) => {
     let colorElement2 = colorElement.cloneNode(true);
 
     colorElement.addEventListener("click", (e) => {
-      let selectedColor = e.target.textContent;
-      userSelectedColor1.textContent = selectedColor;
-      colorStop1.style.stopColor = selectedColor;
-      localStorage.setItem(
-        `${selectedCompany}1`,
-        `"${userSelectedColor1.textContent}"`
-      );
+      if (localStorage.getItem(`${selectedCompany}1`)) {
+        const color1Element = document.querySelector(".color1-element");
+        color1Element.style.backgroundColor = e.target.textContent;
+        color1Element.textContent = e.target.textContent;
+        let selectedColor = e.target.textContent;
+        //   userSelectedColor1.textContent = selectedColor;
+        colorStop1.style.stopColor = selectedColor;
+        localStorage.setItem(
+          `${selectedCompany}1`,
+          `"${color1Element.textContent}"`
+        );
+      } else {
+        // const color1Element = document.createElement("div");
+        // color1Element.className = "color1-element";
+        const color1Element = document.querySelector(".color1-element");
+        color1Element.style.backgroundColor = e.target.textContent;
+        let selectedColor = e.target.textContent;
+        //   userSelectedColor1.textContent = selectedColor;
+        colorStop1.style.stopColor = selectedColor;
+        userSelectedColor1.appendChild(color1Element);
+        color1Element.appendChild(
+          document.createTextNode(e.target.textContent)
+        );
+        localStorage.setItem(
+          `${selectedCompany}1`,
+          `"${color1Element.textContent}"`
+        );
+      }
       getFromLocalStorage();
     });
 
     colorElement2.addEventListener("click", (e) => {
-      let selectedColor = e.target.textContent;
-      userSelectedColor2.textContent = selectedColor;
-      colorStop2.style.stopColor = selectedColor;
-      localStorage.setItem(
-        `${selectedCompany}2`,
-        `"${userSelectedColor2.textContent}"`
-      );
+      if (localStorage.getItem(`${selectedCompany}2`)) {
+        const color2Element = document.querySelector(".color2-element");
+        color2Element.style.backgroundColor = e.target.textContent;
+        color2Element.textContent = e.target.textContent;
+        let selectedColor = e.target.textContent;
+        //   userSelectedColor1.textContent = selectedColor;
+        colorStop2.style.stopColor = selectedColor;
+        localStorage.setItem(
+          `${selectedCompany}2`,
+          `"${color2Element.textContent}"`
+        );
+      } else {
+        const color2Element = document.querySelector(".color2-element");
+        color2Element.style.backgroundColor = e.target.textContent;
+        let selectedColor = e.target.textContent;
+        //   userSelectedColor1.textContent = selectedColor;
+        colorStop2.style.stopColor = selectedColor;
+        userSelectedColor2.appendChild(color2Element);
+        color2Element.appendChild(
+          document.createTextNode(e.target.textContent)
+        );
+        localStorage.setItem(
+          `${selectedCompany}2`,
+          `"${color2Element.textContent}"`
+        );
+      }
+      //   const color2Element = document.createElement("div");
+      //   color2Element.className = "color2-element";
+      //   color2Element.style.backgroundColor = e.target.textContent;
+      //   let selectedColor = e.target.textContent;
+      //   colorStop2.style.stopColor = selectedColor;
+      //   userSelectedColor2.appendChild(color2Element);
+      //   color2Element.appendChild(document.createTextNode(e.target.textContent));
+      //   localStorage.setItem(
+      //     `${selectedCompany}2`,
+      //     `"${userSelectedColor2.textContent}"`
+      //   );
       getFromLocalStorage();
     });
     paletteContainer.appendChild(colorElement);

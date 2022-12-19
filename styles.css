@@ -68,6 +68,11 @@ canvas {
 .color-element:hover {
   cursor: pointer;
 }
+.color1-element,
+.color2-element {
+  color: #fff;
+  padding: 8px;
+}
 #palette {
   border: 1px solid red;
   height: 200px;
