@@ -6,6 +6,7 @@ let colorStop2 = document.querySelector("#color-stop-2");
 const userSelectedColor1 = document.querySelector("#userselected-color-1");
 const userSelectedColor2 = document.querySelector("#userselected-color-2");
 const localStorageDisplay = document.querySelector("#code");
+let selectedCompany = "";
 
 const companies = [
   "Alkemy X",
@@ -18,13 +19,31 @@ const companies = [
 currentCompany.textContent = companies[0];
 companySelector.addEventListener("change", (e) => {
   currentCompany.textContent = e.target.value;
+  selectedCompany = e.target.value;
 });
 getFromLocalStorage();
 
 function getFromLocalStorage() {
-  const clientA1 = localStorage.getItem("clientA1");
-  const clientA2 = localStorage.getItem("clientA2");
-  localStorageDisplay.textContent = `const colors = {clientA1: ${clientA1}, clientA2: ${clientA2}};`;
+  //   const items = { ...localStorage };
+
+  localStorageDisplay.textContent = `const colors = {
+	alkemyX1: ${localStorage.getItem("alkemy-x1") || "#000"},
+	alkemyX2: ${localStorage.getItem("alkemy-x2") || "#000"},
+	fellow1: ${localStorage.getItem("fellow1") || "#000"},
+	fellow2: ${localStorage.getItem("fellow2") || "#000"},
+	gradientPictures1: ${localStorage.getItem("gradient-pictures1") || "#000"},
+	gradientPictures2: ${localStorage.getItem("gradient-pictures2") || "#000"},
+	kromaDigitalCosmetics1: ${
+    localStorage.getItem("kroma-digital-cosmetics1") || "#000"
+  },
+	kromaDigitalCosmetics2: ${
+    localStorage.getItem("kroma-digital-cosmetics2") || "#000"
+  },
+	pictureNorth1: ${localStorage.getItem("picture-north1") || "#000"},
+	pictureNorth2: ${localStorage.getItem("picture-north2") || "#000"},
+	tessaFilms1: ${localStorage.getItem("tessa-films1") || "#000"},
+	tessaFilms2: ${localStorage.getItem("tessa-films2") || "#000"},
+  }`;
 }
 
 // Gregg Code: create empty array to store generated hexColors
@@ -60,7 +79,10 @@ const buildPalette = (colorsList) => {
       let selectedColor = e.target.textContent;
       userSelectedColor1.textContent = selectedColor;
       colorStop1.style.stopColor = selectedColor;
-      localStorage.setItem("clientA1", `"${userSelectedColor1.textContent}"`);
+      localStorage.setItem(
+        `${selectedCompany}1`,
+        `"${userSelectedColor1.textContent}"`
+      );
       getFromLocalStorage();
     });
 
@@ -68,7 +90,10 @@ const buildPalette = (colorsList) => {
       let selectedColor = e.target.textContent;
       userSelectedColor2.textContent = selectedColor;
       colorStop2.style.stopColor = selectedColor;
-      localStorage.setItem("clientA2", `"${userSelectedColor2.textContent}"`);
+      localStorage.setItem(
+        `${selectedCompany}2`,
+        `"${userSelectedColor2.textContent}"`
+      );
       getFromLocalStorage();
     });
     paletteContainer.appendChild(colorElement);
