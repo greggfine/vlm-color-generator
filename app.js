@@ -6,7 +6,14 @@ let colorStop2 = document.querySelector("#color-stop-2");
 const userSelectedColor1 = document.querySelector("#userselected-color-1");
 const userSelectedColor2 = document.querySelector("#userselected-color-2");
 const localStorageDisplay = document.querySelector("#code");
+const removeCodeBtn = document.querySelector("#remove-code-btn");
 let selectedCompany = "";
+let hexColorArr = [];
+
+removeCodeBtn.addEventListener("click", () => {
+  localStorage.clear();
+  getFromLocalStorage();
+});
 
 const companies = [
   "Alkemy X",
@@ -18,6 +25,15 @@ const companies = [
 ];
 currentCompany.textContent = companies[0];
 companySelector.addEventListener("change", (e) => {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById("palette").innerHTML = "";
+  document.getElementById("palette-2").innerHTML = "";
+  document.querySelector(".color1-element").innerHTML = "";
+  document.querySelector(".color2-element").innerHTML = "";
+  document.querySelector(".color1-element").style.backgroundColor = "";
+  document.querySelector(".color2-element").style.backgroundColor = "";
   currentCompany.textContent = e.target.value;
   selectedCompany = e.target.value;
   const color1 = localStorage.getItem(`${selectedCompany}1`);
@@ -29,29 +45,30 @@ getFromLocalStorage();
 
 function getFromLocalStorage() {
   //   const items = { ...localStorage };
-
+  let stringifiedBlack = JSON.stringify("#000");
   localStorageDisplay.textContent = `const colors = {
-	alkemyX1: ${localStorage.getItem("alkemy-x1") || "#000"},
-	alkemyX2: ${localStorage.getItem("alkemy-x2") || "#000"},
-	fellow1: ${localStorage.getItem("fellow1") || "#000"},
-	fellow2: ${localStorage.getItem("fellow2") || "#000"},
-	gradientPictures1: ${localStorage.getItem("gradient-pictures1") || "#000"},
-	gradientPictures2: ${localStorage.getItem("gradient-pictures2") || "#000"},
+	alkemyX1: ${localStorage.getItem("alkemy-x1") || stringifiedBlack},
+	alkemyX2: ${localStorage.getItem("alkemy-x2") || stringifiedBlack},
+	fellow1: ${localStorage.getItem("fellow1") || stringifiedBlack},
+	fellow2: ${localStorage.getItem("fellow2") || stringifiedBlack},
+	gradientPictures1: ${
+    localStorage.getItem("gradient-pictures1") || stringifiedBlack
+  },
+	gradientPictures2: ${
+    localStorage.getItem("gradient-pictures2") || stringifiedBlack
+  },
 	kromaDigitalCosmetics1: ${
-    localStorage.getItem("kroma-digital-cosmetics1") || "#000"
+    localStorage.getItem("kroma-digital-cosmetics1") || stringifiedBlack
   },
 	kromaDigitalCosmetics2: ${
-    localStorage.getItem("kroma-digital-cosmetics2") || "#000"
+    localStorage.getItem("kroma-digital-cosmetics2") || stringifiedBlack
   },
-	pictureNorth1: ${localStorage.getItem("picture-north1") || "#000"},
-	pictureNorth2: ${localStorage.getItem("picture-north2") || "#000"},
-	tessaFilms1: ${localStorage.getItem("tessa-films1") || "#000"},
-	tessaFilms2: ${localStorage.getItem("tessa-films2") || "#000"},
-  }`;
+	pictureNorth1: ${localStorage.getItem("picture-north1") || stringifiedBlack},
+	pictureNorth2: ${localStorage.getItem("picture-north2") || stringifiedBlack},
+	tessaFilms1: ${localStorage.getItem("tessa-films1") || stringifiedBlack},
+	tessaFilms2: ${localStorage.getItem("tessa-films2") || stringifiedBlack},
+  };`;
 }
-
-// Gregg Code: create empty array to store generated hexColors
-let hexColorArr = [];
 
 const buildPalette = (colorsList) => {
   hexColorArr = [];
