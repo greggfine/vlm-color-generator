@@ -1,14 +1,40 @@
+:root {
+  --vlmGreen: #165f16;
+  --boxShadow1: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+.company-selector {
+  padding: 8px 0 8px 2px;
+  font-weight: 900;
+}
 form {
   margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 40px;
   flex-direction: column;
-  font-family: "verdana";
+  font-family: "Arial", sans-serif;
 }
+.btn {
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: var(--boxShadow1);
+  color: var(--vlmGreen);
+  border-color: var(--vlmGreen);
+  font-weight: 900;
+  background-color: #fff;
+  transition: background-color 200ms;
+}
+.btn:hover {
+  cursor: pointer;
+  background-color: var(--vlmGreen);
+  color: #fff;
+}
+
 h1 {
   font-weight: bold;
   font-size: 3rem;
@@ -21,21 +47,52 @@ canvas {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   max-width: 200px;
+  max-height: 200px;
+  margin-bottom: 20px;
+}
+.color-box {
+  width: 90%;
+}
+.divider {
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+input[type="file"] {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #000;
+}
+svg {
+  width: 70%;
+  padding-top: 45px;
+}
+.color-palette {
+  font-weight: 900;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 0.5rem 0.75rem;
+  background-color: #f4f4f4;
+}
+.palette-wrap {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 #palette,
-#palette-2,
-#complementary {
+#palette-2 {
+  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
-  width: 50%;
+  width: 95%;
+  justify-content: flex-end;
 }
 
-#palette div,
-#palette-2 div,
-#complementary div {
-  height: 90px;
+#palette > div,
+#palette-2 > div {
+  height: 40px;
   width: 90px;
   display: flex;
   justify-content: center;
@@ -48,40 +105,40 @@ canvas {
   text-shadow: 1px 1px #333;
 }
 
-#palette div,
-#palette-2 div,
-#complementary div {
-  height: 90px;
-  width: 90px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 .code {
   margin-top: 40px;
-  border: 2px solid #000;
-  height: 100px;
+  border: 1.5px dotted #000;
+  padding: 1rem;
   width: min-content;
-  min-width: 70%;
+  min-width: 90%;
+  background-color: #e7e7e7;
 }
 
 .color-element:hover {
   cursor: pointer;
+  transform: scale(1.05);
 }
 .color1-element,
 .color2-element {
   color: #fff;
   padding: 8px;
 }
-#palette {
-  border: 1px solid red;
-  height: 200px;
+.code-btns {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  width: 100%;
 }
-#palette-2 {
-  border: 1px solid #000;
-  height: 200px;
+.removeCodeBtn {
+  color: red;
+  border: 1px solid red;
 }
 .copyCodeBtn:hover,
 .removeCodeBtn:hover {
   cursor: pointer;
+}
+.removeCodeBtn:hover {
+  background-color: red;
+  color: #fff;
 }
