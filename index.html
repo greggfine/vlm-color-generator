@@ -8,6 +8,23 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <select name="" id="company-selector" class="company-selector">
+      <option value="alkemy-x">Alkemy X</option>
+      <option value="fellow">Fellow</option>
+      <option value="gradient-pictures">Gradient Pictures</option>
+      <option value="kroma-digital-cosmetics">Kroma Digital Cosmetics</option>
+      <option value="picture-north">Picture North</option>
+      <option value="tessa-films">Tessa Films</option>
+    </select>
+
+    <form action="#">
+      <input type="file" id="imgfile" />
+      <input type="button" id="btnLoad" value="Generate" class="btn" />
+    </form>
+
+    <canvas id="canvas"></canvas>
+    <div class="divider"></div>
+
     <svg
       width="519"
       height="161"
@@ -47,42 +64,30 @@
       </defs>
     </svg>
 
-    <h2>Company: <span id="current-company"></span></h2>
+    <div class="divider"></div>
 
-    <select name="" id="company-selector">
-      <option value="alkemy-x">Alkemy X</option>
-      <option value="fellow">Fellow</option>
-      <option value="gradient-pictures">Gradient Pictures</option>
-      <option value="kroma-digital-cosmetics">Kroma Digital Cosmetics</option>
-      <option value="picture-north">Picture North</option>
-      <option value="tessa-films">Tessa Films</option>
-    </select>
+    <section class="color-box">
+      <div class="palette-wrap">
+        <span class="color-palette">Color1</span>
+        <div id="palette"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="palette-wrap">
+        <span class="color-palette">Color2</span>
+        <div id="palette-2"></div>
+      </div>
+    </section>
 
-    <form action="#">
-      <input type="file" id="imgfile" />
-      <input type="button" id="btnLoad" value="Generate" />
-    </form>
-
-    <canvas id="canvas"></canvas>
-    <div id="palette"></div>
-    <div id="palette-2"></div>
-
-    <p>
-      Color 1:
-      <span id="userselected-color-1">
-        <div class="color1-element"></div>
-      </span>
-    </p>
-    <p>
-      Color 2:
-      <span id="userselected-color-2">
-        <div class="color2-element"></div>
-      </span>
-    </p>
+    <div class="divider"></div>
 
     <div id="code" class="code"></div>
-    <button id="copy-code-btn" class="copyCodeBtn">Copy Code</button>
-    <button id="remove-code-btn" class="removeCodeBtn">Remove Code</button>
+
+    <section class="code-btns">
+      <button id="remove-code-btn" class="removeCodeBtn btn">
+        Remove All Colors
+      </button>
+      <button id="copy-code-btn" class="copyCodeBtn btn">Copy Code</button>
+    </section>
 
     <script src="app.js"></script>
   </body>
