@@ -80,7 +80,7 @@ svg {
   display: flex;
   align-items: center;
 }
-#palette,
+#palette-1,
 #palette-2 {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -90,7 +90,7 @@ svg {
   justify-content: flex-end;
 }
 
-#palette > div,
+#palette-1 > div,
 #palette-2 > div {
   height: 40px;
   width: 90px;
