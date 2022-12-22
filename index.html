@@ -49,7 +49,42 @@
 
       <defs>
         <clipPath id="clip0_133_136">
-          <rect width="519" height="161" fill="white" />
+          <rect width="519" height="161" fill="white" /body {
+  height: 300vh;
+  background-color: #111;
+  color: white;
+  overflow-x: hidden;
+}
+
+h1, h2 {
+  font-weight: 400;
+  max-width: none;
+}
+
+.comparisonSection {
+  position: relative;
+  padding-bottom: 56.25%; /* to maintain aspect ratio (responsive!) */
+}
+.comparisonImage {
+  width: 100%;
+  height: 100%;
+}
+.afterImage {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  transform: translate(100%, 0px);
+}
+.afterImage img {
+  transform: translate(-100%, 0px);
+}
+.comparisonImage img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+>
         </clipPath>
         <linearGradient id="vlm-gradient" x1="0" x2="0" y1="0" y2="1">
           <stop id="color-stop-1" offset="0%" stop-color="black" /> -->
@@ -75,7 +110,8 @@
             fill: #939393;
           }
         </style>
-        <linearGradient id="vlm-gradient" x1="1.5" x2="0" y1="0" y2="0.8">
+        <linearGradient id="vlm-gradient" x1="0" x2="0" y1="0" y2="1">
+          <!-- <linearGradient id="vlm-gradient" x1="1.5" x2="0" y1="0" y2="0.8"> -->
           <!-- <linearGradient id="vlm-gradient" gradientTransform="rotate(110)"> -->
           <stop id="color-stop-1" offset="0%" stop-color="black" />
           <!-- <stop
@@ -130,8 +166,11 @@
     <div id="code" class="code"></div>
 
     <section class="code-btns">
+      <button id="remove-this-code-btn" class="removeCodeBtn btn">
+        Remove This Color
+      </button>
       <button id="remove-code-btn" class="removeCodeBtn btn">
-        Remove All Colors
+        Remove ALL Colors
       </button>
       <button id="copy-code-btn" class="copyCodeBtn btn">Copy Code</button>
     </section>
