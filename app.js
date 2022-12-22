@@ -1,3 +1,11 @@
+const companies = [
+  "alkemy-x",
+  "fellow",
+  "gradient-pictures",
+  "kroma-digital-cosmetics",
+  "picture-north",
+  "tessa-films",
+];
 const companySelector = document.querySelector("#company-selector");
 const currentCompany = document.querySelector("#current-company");
 const vlmGradient = document.querySelector("#vlm-gradient");
@@ -7,37 +15,58 @@ const userSelectedColor1 = document.querySelector("#userselected-color-1");
 const userSelectedColor2 = document.querySelector("#userselected-color-2");
 const localStorageDisplay = document.querySelector("#code");
 const removeCodeBtn = document.querySelector("#remove-code-btn");
+const removeThisCodeBtn = document.querySelector("#remove-this-code-btn");
 const paletteContainer = document.getElementById("palette-1");
 const paletteContainer2 = document.getElementById("palette-2");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 let selectedCompany = "";
 let hexColorArr = [];
 
 removeCodeBtn.addEventListener("click", () => {
   const answer = prompt("Are you sure you want to remove all colors?", "yes");
   if (answer) {
-    localStorage.clear();
-    getFromLocalStorage();
+    resetAllColors();
   }
 });
+
+removeThisCodeBtn.addEventListener("click", () => {
+  const answer = prompt("Are you sure you want to remove this color?", "yes");
+  if (answer) {
+    localStorage.removeItem(`${selectedCompany}1`);
+    localStorage.removeItem(`${selectedCompany}2`);
+    colorStop1.style.stopColor = "#000";
+    colorStop2.style.stopColor = "#000";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    getCodeFromLocalStorage();
+  }
+});
+
+function resetAllColors() {
+  localStorage.clear();
+  getCodeFromLocalStorage();
+  colorStop1.style.stopColor = "#000";
+  colorStop2.style.stopColor = "#000";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  removeAllChildNodes(paletteContainer);
+  removeAllChildNodes(paletteContainer2);
+}
+
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
 
 const loadBtn = document.querySelector("#btnLoad");
 loadBtn.addEventListener("click", () => {
   main();
 });
 
-const companies = [
-  "alkemy-x",
-  "fellow",
-  "gradient-pictures",
-  "kroma-digital-cosmetics",
-  "picture-north",
-  "tessa-films",
-];
-
 window.onload = () => {
   console.clear();
   // loadBtn.disabled = true;
-  getFromLocalStorage();
+  getCodeFromLocalStorage();
   selectedCompany = companies[0];
   const color1 = localStorage.getItem(`${selectedCompany}1`);
   const color2 = localStorage.getItem(`${selectedCompany}2`);
@@ -63,8 +92,8 @@ companySelector.addEventListener("change", (e) => {
   const color2 = localStorage.getItem(`${selectedCompany}2`);
   colorStop1.style.stopColor = JSON.parse(color1);
   colorStop2.style.stopColor = JSON.parse(color2);
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
+  // const canvas = document.getElementById("canvas");
+  // const ctx = canvas.getContext("2d");
   // const image = new Image();
   // if (selectedCompany) {
   //   let imgStr = `${selectedCompany}IMG`;
@@ -83,7 +112,7 @@ companySelector.addEventListener("change", (e) => {
 });
 // getFromLocalStorage();
 
-function getFromLocalStorage() {
+function getCodeFromLocalStorage() {
   //   const items = { ...localStorage };
   let stringifiedBlack = JSON.stringify("#000");
   localStorageDisplay.textContent = `const colors = {
@@ -121,10 +150,10 @@ const main = () => {
     // loadBtn.disabled = false;
     image.onload = () => {
       // Set the canvas size to be the same as of the uploaded image
-      const canvas = document.getElementById("canvas");
+      // const canvas = document.getElementById("canvas");
       canvas.width = image.width;
       canvas.height = image.height;
-      const ctx = canvas.getContext("2d");
+      // const ctx = canvas.getContext("2d");
       ctx.drawImage(image, 0, 0);
 
       /**
@@ -158,8 +187,6 @@ const main = () => {
 
       // Create the HTML structure to show the color palette
       buildPalette(quantColors);
-      colorStop1.style.stopColor = hexColorArr[12];
-      colorStop2.style.stopColor = hexColorArr[15];
       //   downloadSVGasTextFile();
     };
     image.src = fileReader.result;
@@ -228,7 +255,7 @@ const buildPalette = (colorsList) => {
       visiblyIndicateColor(colorElements, selectedColor);
       setColorStopsInLogo(colorPaletteNum, selectedColor);
       saveColorToLocalStorage(colorPaletteNum, selectedColor);
-      getFromLocalStorage();
+      getCodeFromLocalStorage();
     }
 
     colorElement.addEventListener("click", (e) => {
