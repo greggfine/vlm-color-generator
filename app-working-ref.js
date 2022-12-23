@@ -10,6 +10,9 @@ const loadBtn = document.querySelector("#btnLoad");
 const companySelector = document.querySelector("#company-selector");
 const currentCompany = document.querySelector("#current-company");
 const vlmGradient = document.querySelector("#vlm-gradient");
+let colorStop1 = document.querySelector("#color-stop-1");
+let colorStop2 = document.querySelector("#color-stop-2");
+let colorStop3 = document.querySelector("#color-stop-3");
 const userSelectedColor1 = document.querySelector("#userselected-color-1");
 const userSelectedColor2 = document.querySelector("#userselected-color-2");
 const localStorageDisplay = document.querySelector("#code");
@@ -18,18 +21,8 @@ const removeThisCodeBtn = document.querySelector("#remove-this-code-btn");
 const paletteContainer = document.getElementById("palette-1");
 const paletteContainer2 = document.getElementById("palette-2");
 const paletteContainer3 = document.getElementById("palette-3");
-const paletteContainers = [
-  paletteContainer,
-  paletteContainer2,
-  paletteContainer3,
-];
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const numPalettes = 3;
-let colorStop1 = document.querySelector("#color-stop-1");
-let colorStop2 = document.querySelector("#color-stop-2");
-let colorStop3 = document.querySelector("#color-stop-3");
-const colorStops = [colorStop1, colorStop2, colorStop3];
 let selectedCompany = "";
 let hexColorArr = [];
 
@@ -44,16 +37,19 @@ removeCodeBtn.addEventListener("click", () => {
 removeThisCodeBtn.addEventListener("click", () => {
   const answer = prompt("Are you sure you want to remove this color?", "yes");
   if (answer) {
-    let i = 1;
-    while (i <= numPalettes) {
-      localStorage.removeItem(`${selectedCompany}${i}`);
-      i++;
-    }
+    localStorage.removeItem(`${selectedCompany}1`);
+    localStorage.removeItem(`${selectedCompany}2`);
+    localStorage.removeItem(`${selectedCompany}3`);
     localStorage.removeItem(`${selectedCompany}-hexcodes`);
     localStorage.removeItem(`${selectedCompany}IMG`);
     getCodeFromLocalStorage();
-    resetColorStopsAndPalettes();
+    colorStop1.style.stopColor = "#000";
+    colorStop2.style.stopColor = "#000";
+    colorStop3.style.fill = "#000";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    removeAllChildNodes(paletteContainer);
+    removeAllChildNodes(paletteContainer2);
+    removeAllChildNodes(paletteContainer3);
     localStorageSpace();
   }
 });
@@ -61,13 +57,10 @@ removeThisCodeBtn.addEventListener("click", () => {
 function resetAllColors() {
   localStorage.clear();
   getCodeFromLocalStorage();
-  resetColorStopsAndPalettes();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-function resetColorStopsAndPalettes() {
   colorStop1.style.stopColor = "#000";
   colorStop2.style.stopColor = "#000";
   colorStop3.style.fill = "#000";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   removeAllChildNodes(paletteContainer);
   removeAllChildNodes(paletteContainer2);
   removeAllChildNodes(paletteContainer3);
@@ -80,17 +73,15 @@ function removeAllChildNodes(parent) {
 }
 
 window.onload = () => {
+  // console.clear();
+  // loadBtn.disabled = true;
+  // loadBtn.style.disabled = "true";
   getCodeFromLocalStorage();
   selectedCompany = companies[0];
-  const colors = [];
-  let i = 1;
-  while (i <= numPalettes) {
-    colors[i] = JSON.parse(localStorage.getItem(`${selectedCompany}${[i]}`));
-    i++;
-  }
-  colorStop1.style.stopColor = colors[1];
-  colorStop2.style.stopColor = colors[2];
-  colorStop3.style.fill = colors[3];
+  const color1 = localStorage.getItem(`${selectedCompany}1`);
+  const color2 = localStorage.getItem(`${selectedCompany}2`);
+  colorStop1.style.stopColor = JSON.parse(color1);
+  colorStop2.style.stopColor = JSON.parse(color2);
   loadBtn.addEventListener("click", () => {
     main();
   });
@@ -101,7 +92,9 @@ companySelector.addEventListener("change", (e) => {
   const currentCompanyIMG = window.atob(
     window.localStorage.getItem(`${selectedCompany}IMG`)
   );
-  clearPalettes();
+  paletteContainer.innerHTML = "";
+  paletteContainer2.innerHTML = "";
+  paletteContainer3.innerHTML = "";
   selectedCompany = e.target.value;
   const color1 = localStorage.getItem(`${selectedCompany}1`);
   const color2 = localStorage.getItem(`${selectedCompany}2`);
@@ -201,6 +194,11 @@ function handleColorPalette(e, colorPaletteNum) {
   getCodeFromLocalStorage();
 }
 
+// console.log(splitStringArr);
+// console.log(hexArray);
+// console.log(typeof stringArr);
+// });
+
 function getCodeFromLocalStorage() {
   let stringifiedBlack = JSON.stringify("#000");
   localStorageDisplay.textContent = `const colors = {
@@ -258,8 +256,10 @@ const main = () => {
   fileReader.onload = () => {
     image.onload = () => {
       // Set the canvas size to be the same as of the uploaded image
+      // const canvas = document.getElementById("canvas");
       canvas.width = image.width;
       canvas.height = image.height;
+      // const ctx = canvas.getContext("2d");
       ctx.drawImage(image, 0, 0);
 
       /**
@@ -303,85 +303,87 @@ const main = () => {
   imgFile.value = "";
 };
 
-function clearPalettes() {
-  paletteContainers.forEach((palette) => {
-    palette.innerHTML = "";
-  });
-}
-function buildPaletteElement(hexColor) {
-  const colorElement = document.createElement("div");
-  colorElement.className = "color-element";
-  colorElement.style.backgroundColor = hexColor;
-  if (hexColor !== "#FFFFFF") {
-    colorElement.appendChild(document.createTextNode(hexColor));
-  }
-
-  let colorElement2 = colorElement.cloneNode(true);
-  let colorElement3 = colorElement.cloneNode(true);
-  colorElement.addEventListener("click", (e) => {
-    handleColorPalette(e, 1);
-  });
-  colorElement2.addEventListener("click", (e) => {
-    handleColorPalette(e, 2);
-  });
-  colorElement3.addEventListener("click", (e) => {
-    handleColorPalette(e, 3);
-  });
-  if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
-    paletteContainer.appendChild(colorElement);
-    paletteContainer2.appendChild(colorElement2);
-    paletteContainer3.appendChild(colorElement3);
-  }
-}
-function visiblyIndicateColor(colorElements, selectedColor) {
-  colorElements.forEach((colorEl) => {
-    if (colorEl.textContent === selectedColor) {
-      colorEl.style.border = "3px solid #000";
-      colorEl.style.borderRadius = "50%";
-    } else {
-      colorEl.style.border = "none";
-      colorEl.style.borderRadius = "0%";
-    }
-  });
-}
-function setColorStopsInLogo(colorPaletteNum, selectedColor) {
-  if (colorPaletteNum === 1) {
-    colorStop1.style.stopColor = selectedColor;
-  } else if (colorPaletteNum === 2) {
-    colorStop2.style.stopColor = selectedColor;
-  } else if (colorPaletteNum === 3) {
-    colorStop3.style.fill = selectedColor;
-  }
-}
-function saveColorToLocalStorage(colorPaletteNum, selectedColor) {
-  localStorage.setItem(
-    `${selectedCompany}${colorPaletteNum}`,
-    `"${selectedColor}"`
-  );
-}
-
-function handleColorPalette(e, colorPaletteNum) {
-  // get the hex code for the color that was clicked on
-  let selectedColor = e.target.textContent;
-  // get a NodeList of all the color elements depending on which palette was clicked on
-  const colorElements = document.querySelectorAll(
-    `#palette-${colorPaletteNum} .color-element`
-  );
-  visiblyIndicateColor(colorElements, selectedColor);
-  setColorStopsInLogo(colorPaletteNum, selectedColor);
-  saveColorToLocalStorage(colorPaletteNum, selectedColor);
-  getCodeFromLocalStorage();
-}
 const buildPalette = (colorsList) => {
   localStorageSpace();
   hexColorArr = [];
-  clearPalettes();
+  paletteContainer.innerHTML = "";
+  paletteContainer2.innerHTML = "";
+  paletteContainer3.innerHTML = "";
   const orderedByColor = orderByLuminance(colorsList);
 
   for (let i = 0; i < orderedByColor.length; i++) {
     const hexColor = rgbToHex(orderedByColor[i]);
     hexColorArr.push(hexColor);
-    buildPaletteElement(hexColor);
+
+    const colorElement = document.createElement("div");
+    colorElement.className = "color-element";
+    colorElement.style.backgroundColor = hexColor;
+    if (hexColor !== "#FFFFFF") {
+      colorElement.appendChild(document.createTextNode(hexColor));
+    }
+
+    let colorElement2 = colorElement.cloneNode(true);
+    let colorElement3 = colorElement.cloneNode(true);
+
+    function visiblyIndicateColor(colorElements, selectedColor) {
+      // loop through the NodeList and, if the element's hex code matches the color that was clicked on
+      // visually indicate it with a circular border
+      // Else, reset the border style
+      colorElements.forEach((colorEl) => {
+        if (colorEl.textContent === selectedColor) {
+          colorEl.style.border = "3px solid #000";
+          colorEl.style.borderRadius = "50%";
+        } else {
+          colorEl.style.border = "none";
+          colorEl.style.borderRadius = "0%";
+        }
+      });
+    }
+
+    function setColorStopsInLogo(colorPaletteNum, selectedColor) {
+      if (colorPaletteNum === 1) {
+        colorStop1.style.stopColor = selectedColor;
+      } else if (colorPaletteNum === 2) {
+        colorStop2.style.stopColor = selectedColor;
+      } else if (colorPaletteNum === 3) {
+        colorStop3.style.fill = selectedColor;
+      }
+    }
+
+    function saveColorToLocalStorage(colorPaletteNum, selectedColor) {
+      localStorage.setItem(
+        `${selectedCompany}${colorPaletteNum}`,
+        `"${selectedColor}"`
+      );
+    }
+
+    function handleColorPalette(e, colorPaletteNum) {
+      // get the hex code for the color that was clicked on
+      let selectedColor = e.target.textContent;
+      // get a NodeList of all the color elements depending on which palette was clicked on
+      const colorElements = document.querySelectorAll(
+        `#palette-${colorPaletteNum} .color-element`
+      );
+      visiblyIndicateColor(colorElements, selectedColor);
+      setColorStopsInLogo(colorPaletteNum, selectedColor);
+      saveColorToLocalStorage(colorPaletteNum, selectedColor);
+      getCodeFromLocalStorage();
+    }
+
+    colorElement.addEventListener("click", (e) => {
+      handleColorPalette(e, 1);
+    });
+    colorElement2.addEventListener("click", (e) => {
+      handleColorPalette(e, 2);
+    });
+    colorElement3.addEventListener("click", (e) => {
+      handleColorPalette(e, 3);
+    });
+    if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
+      paletteContainer.appendChild(colorElement);
+      paletteContainer2.appendChild(colorElement2);
+      paletteContainer3.appendChild(colorElement3);
+    }
   }
   colorArrFinal = Array.from(new Set(hexColorArr));
   localStorage.setItem(`${selectedCompany}-hexcodes`, colorArrFinal);
