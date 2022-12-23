@@ -12,6 +12,7 @@ const currentCompany = document.querySelector("#current-company");
 const vlmGradient = document.querySelector("#vlm-gradient");
 let colorStop1 = document.querySelector("#color-stop-1");
 let colorStop2 = document.querySelector("#color-stop-2");
+let colorStop3 = document.querySelector("#color-stop-3");
 const userSelectedColor1 = document.querySelector("#userselected-color-1");
 const userSelectedColor2 = document.querySelector("#userselected-color-2");
 const localStorageDisplay = document.querySelector("#code");
@@ -19,6 +20,7 @@ const removeCodeBtn = document.querySelector("#remove-code-btn");
 const removeThisCodeBtn = document.querySelector("#remove-this-code-btn");
 const paletteContainer = document.getElementById("palette-1");
 const paletteContainer2 = document.getElementById("palette-2");
+const paletteContainer3 = document.getElementById("palette-3");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let selectedCompany = "";
@@ -28,6 +30,7 @@ removeCodeBtn.addEventListener("click", () => {
   const answer = prompt("Are you sure you want to remove all colors?", "yes");
   if (answer) {
     resetAllColors();
+    localStorageSpace();
   }
 });
 
@@ -36,13 +39,18 @@ removeThisCodeBtn.addEventListener("click", () => {
   if (answer) {
     localStorage.removeItem(`${selectedCompany}1`);
     localStorage.removeItem(`${selectedCompany}2`);
+    localStorage.removeItem(`${selectedCompany}3`);
     localStorage.removeItem(`${selectedCompany}-hexcodes`);
+    localStorage.removeItem(`${selectedCompany}IMG`);
     getCodeFromLocalStorage();
     colorStop1.style.stopColor = "#000";
     colorStop2.style.stopColor = "#000";
+    colorStop3.style.fill = "#000";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     removeAllChildNodes(paletteContainer);
     removeAllChildNodes(paletteContainer2);
+    removeAllChildNodes(paletteContainer3);
+    localStorageSpace();
   }
 });
 
@@ -51,9 +59,11 @@ function resetAllColors() {
   getCodeFromLocalStorage();
   colorStop1.style.stopColor = "#000";
   colorStop2.style.stopColor = "#000";
+  colorStop3.style.fill = "#000";
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   removeAllChildNodes(paletteContainer);
   removeAllChildNodes(paletteContainer2);
+  removeAllChildNodes(paletteContainer3);
 }
 
 function removeAllChildNodes(parent) {
@@ -63,7 +73,7 @@ function removeAllChildNodes(parent) {
 }
 
 window.onload = () => {
-  console.clear();
+  // console.clear();
   // loadBtn.disabled = true;
   // loadBtn.style.disabled = "true";
   getCodeFromLocalStorage();
@@ -75,20 +85,31 @@ window.onload = () => {
   loadBtn.addEventListener("click", () => {
     main();
   });
+  localStorageSpace();
 };
 
 companySelector.addEventListener("change", (e) => {
-  document.getElementById("palette-1").innerHTML = "";
-  document.getElementById("palette-2").innerHTML = "";
+  const currentCompanyIMG = window.atob(
+    window.localStorage.getItem(`${selectedCompany}IMG`)
+  );
+  paletteContainer.innerHTML = "";
+  paletteContainer2.innerHTML = "";
+  paletteContainer3.innerHTML = "";
   selectedCompany = e.target.value;
   const color1 = localStorage.getItem(`${selectedCompany}1`);
   const color2 = localStorage.getItem(`${selectedCompany}2`);
+  const color3 = localStorage.getItem(`${selectedCompany}3`);
   colorStop1.style.stopColor = JSON.parse(color1);
   colorStop2.style.stopColor = JSON.parse(color2);
+  colorStop3.style.fill = JSON.parse(color3);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // const hexArray = JSON.parse(
-  //   localStorage.getItem(`${selectedCompany}-hexcodes`)
-  // );
+  // const currentCompanyIMG = localStorage.getItem(`${selectedCompany}IMG`);
+  // console.log(currentCompanyIMG);
+  // const img = new Image();
+  // img.src = currentCompanyIMG;
+  // canvas.width = img.width;
+  // canvas.height = img.height;
+  // ctx.drawImage(img, 0, 0);
   const stringArr = localStorage.getItem(`${selectedCompany}-hexcodes`);
   const splitStringArr = stringArr.split(",");
   // Now, we have an array of hex values
@@ -99,15 +120,20 @@ companySelector.addEventListener("change", (e) => {
     colorElement.style.backgroundColor = hexColor;
     colorElement.appendChild(document.createTextNode(hexColor));
     let colorElement2 = colorElement.cloneNode(true);
+    let colorElement3 = colorElement.cloneNode(true);
     colorElement.addEventListener("click", (e) => {
       handleColorPalette(e, 1);
     });
     colorElement2.addEventListener("click", (e) => {
       handleColorPalette(e, 2);
     });
+    colorElement3.addEventListener("click", (e) => {
+      handleColorPalette(e, 3);
+    });
     if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
       paletteContainer.appendChild(colorElement);
       paletteContainer2.appendChild(colorElement2);
+      paletteContainer3.appendChild(colorElement3);
     }
     if (colorElement.textContent === JSON.parse(color1)) {
       colorElement.style.border = "3px solid #000";
@@ -116,6 +142,10 @@ companySelector.addEventListener("change", (e) => {
     if (colorElement2.textContent === JSON.parse(color2)) {
       colorElement2.style.border = "3px solid #000";
       colorElement2.style.borderRadius = "50%";
+    }
+    if (colorElement3.textContent === JSON.parse(color3)) {
+      colorElement3.style.border = "3px solid #000";
+      colorElement3.style.borderRadius = "50%";
     }
   });
 });
@@ -139,6 +169,8 @@ function setColorStopsInLogo(colorPaletteNum, selectedColor) {
     colorStop1.style.stopColor = selectedColor;
   } else if (colorPaletteNum === 2) {
     colorStop2.style.stopColor = selectedColor;
+  } else if (colorPaletteNum === 3) {
+    colorStop3.style.fill = selectedColor;
   }
 }
 
@@ -147,6 +179,7 @@ function saveColorToLocalStorage(colorPaletteNum, selectedColor) {
     `${selectedCompany}${colorPaletteNum}`,
     `"${selectedColor}"`
   );
+  // localStorageSpace();
 }
 function handleColorPalette(e, colorPaletteNum) {
   // get the hex code for the color that was clicked on
@@ -171,13 +204,18 @@ function getCodeFromLocalStorage() {
   localStorageDisplay.textContent = `const colors = {
 	alkemyX1: ${localStorage.getItem("alkemy-x1") || stringifiedBlack},
 	alkemyX2: ${localStorage.getItem("alkemy-x2") || stringifiedBlack},
+	alkemyX3: ${localStorage.getItem("alkemy-x3") || stringifiedBlack},
 	fellow1: ${localStorage.getItem("fellow1") || stringifiedBlack},
 	fellow2: ${localStorage.getItem("fellow2") || stringifiedBlack},
+	fellow3: ${localStorage.getItem("fellow3") || stringifiedBlack},
 	gradientPictures1: ${
     localStorage.getItem("gradient-pictures1") || stringifiedBlack
   },
 	gradientPictures2: ${
     localStorage.getItem("gradient-pictures2") || stringifiedBlack
+  },
+	gradientPictures3: ${
+    localStorage.getItem("gradient-pictures3") || stringifiedBlack
   },
 	kromaDigitalCosmetics1: ${
     localStorage.getItem("kroma-digital-cosmetics1") || stringifiedBlack
@@ -185,10 +223,15 @@ function getCodeFromLocalStorage() {
 	kromaDigitalCosmetics2: ${
     localStorage.getItem("kroma-digital-cosmetics2") || stringifiedBlack
   },
+	kromaDigitalCosmetics3: ${
+    localStorage.getItem("kroma-digital-cosmetics3") || stringifiedBlack
+  },
 	pictureNorth1: ${localStorage.getItem("picture-north1") || stringifiedBlack},
 	pictureNorth2: ${localStorage.getItem("picture-north2") || stringifiedBlack},
+	pictureNorth3: ${localStorage.getItem("picture-north3") || stringifiedBlack},
 	tessaFilms1: ${localStorage.getItem("tessa-films1") || stringifiedBlack},
 	tessaFilms2: ${localStorage.getItem("tessa-films2") || stringifiedBlack},
+	tessaFilms3: ${localStorage.getItem("tessa-films3") || stringifiedBlack},
   };`;
 }
 
@@ -232,6 +275,8 @@ const main = () => {
       /* ======================================================= */
       /* GREGG IMAGE EXPERIMENT!!!!! */
       // let imgAsDataURL = canvas.toDataURL("image/jpg");
+      // console.log(window.btoa(imgAsDataURL));
+      // localStorage.setItem(`${selectedCompany}IMG`, window.btoa(imgAsDataURL));
       // localStorage.setItem(`${selectedCompany}IMG`, imgAsDataURL);
       /* GREGG IMAGE EXPERIMENT END!!!!! */
       /* ======================================================= */
@@ -259,9 +304,11 @@ const main = () => {
 };
 
 const buildPalette = (colorsList) => {
+  localStorageSpace();
   hexColorArr = [];
   paletteContainer.innerHTML = "";
   paletteContainer2.innerHTML = "";
+  paletteContainer3.innerHTML = "";
   const orderedByColor = orderByLuminance(colorsList);
 
   for (let i = 0; i < orderedByColor.length; i++) {
@@ -276,6 +323,7 @@ const buildPalette = (colorsList) => {
     }
 
     let colorElement2 = colorElement.cloneNode(true);
+    let colorElement3 = colorElement.cloneNode(true);
 
     function visiblyIndicateColor(colorElements, selectedColor) {
       // loop through the NodeList and, if the element's hex code matches the color that was clicked on
@@ -297,6 +345,8 @@ const buildPalette = (colorsList) => {
         colorStop1.style.stopColor = selectedColor;
       } else if (colorPaletteNum === 2) {
         colorStop2.style.stopColor = selectedColor;
+      } else if (colorPaletteNum === 3) {
+        colorStop3.style.fill = selectedColor;
       }
     }
 
@@ -326,9 +376,13 @@ const buildPalette = (colorsList) => {
     colorElement2.addEventListener("click", (e) => {
       handleColorPalette(e, 2);
     });
+    colorElement3.addEventListener("click", (e) => {
+      handleColorPalette(e, 3);
+    });
     if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
       paletteContainer.appendChild(colorElement);
       paletteContainer2.appendChild(colorElement2);
+      paletteContainer3.appendChild(colorElement3);
     }
   }
   colorArrFinal = Array.from(new Set(hexColorArr));
@@ -363,3 +417,35 @@ copyCodeBtn.addEventListener("click", () => {
   document.execCommand("copy");
   window.getSelection().removeAllRanges();
 });
+
+const localStorageSpace = function () {
+  var data = "";
+  console.log("Current local storage: ");
+  for (var key in window.localStorage) {
+    if (window.localStorage.hasOwnProperty(key)) {
+      data += window.localStorage[key];
+      console.log(
+        key +
+          " = " +
+          ((window.localStorage[key].length * 16) / (8 * 1024)).toFixed(2) +
+          " KB"
+      );
+    }
+  }
+
+  console.log(
+    data
+      ? "\n" +
+          "Total space used: " +
+          ((data.length * 16) / (8 * 1024)).toFixed(2) +
+          " KB"
+      : "Empty (0 KB)"
+  );
+  console.log(
+    data
+      ? "Approx. space remaining: " +
+          (5120 - ((data.length * 16) / (8 * 1024)).toFixed(2)) +
+          " KB"
+      : "5 MB"
+  );
+};
