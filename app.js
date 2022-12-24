@@ -91,6 +91,7 @@ function removeAllChildNodes(parent) {
 window.onload = () => {
   getCodeFromLocalStorage();
   selectedCompany = companies[0];
+  getIMGFromIndexedDB(selectedCompany);
   const colors = [];
   let i = 1;
   while (i <= numPalettes) {
