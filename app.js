@@ -56,6 +56,7 @@ removeThisCodeBtn.addEventListener("click", () => {
     resetColorStopsAndPalettes();
     clearCanvasImage();
     localStorageSpace();
+    clearOneFromIndexedDB(selectedCompany);
   }
 });
 
@@ -68,7 +69,7 @@ function resetAllColors() {
   getCodeFromLocalStorage();
   resetColorStopsAndPalettes();
   clearCanvasImage();
-  clearIndexedDb();
+  clearAllFromIndexedDB();
 }
 function resetColorStopsAndPalettes() {
   colorStops.forEach((colorStop, idx) => {
@@ -109,7 +110,7 @@ window.onload = () => {
 
 companySelector.addEventListener("change", (e) => {
   clearPalettes();
-  // clearCanvasImage();
+  clearCanvasImage();
   selectedCompany = e.target.value;
   getIMGFromIndexedDB(selectedCompany);
   const color1 = localStorage.getItem(`${selectedCompany}1`);
@@ -421,39 +422,66 @@ copyCodeBtn.addEventListener("click", () => {
 
 const localStorageSpace = function () {
   var data = "";
-  // console.log("Current local storage: ");
-  // for (var key in window.localStorage) {
-  //   if (window.localStorage.hasOwnProperty(key)) {
-  //     data += window.localStorage[key];
-  //     console.log(
-  //       key +
-  //         " = " +
-  //         ((window.localStorage[key].length * 16) / (8 * 1024)).toFixed(2) +
-  //         " KB"
-  //     );
-  //   }
-  // }
+  console.log("Current local storage: ");
+  for (var key in window.localStorage) {
+    if (window.localStorage.hasOwnProperty(key)) {
+      data += window.localStorage[key];
+      console.log(
+        key +
+          " = " +
+          ((window.localStorage[key].length * 16) / (8 * 1024)).toFixed(2) +
+          " KB"
+      );
+    }
+  }
 
-  // console.log(
-  //   data
-  //     ? "\n" +
-  //         "Total space used: " +
-  //         ((data.length * 16) / (8 * 1024)).toFixed(2) +
-  //         " KB"
-  //     : "Empty (0 KB)"
-  // );
-  // console.log(
-  //   data
-  //     ? "Approx. space remaining: " +
-  //         (5120 - ((data.length * 16) / (8 * 1024)).toFixed(2)) +
-  //         " KB"
-  //     : "5 MB"
-  // );
+  console.log(
+    data
+      ? "\n" +
+          "Total space used: " +
+          ((data.length * 16) / (8 * 1024)).toFixed(2) +
+          " KB"
+      : "Empty (0 KB)"
+  );
+  console.log(
+    data
+      ? "Approx. space remaining: " +
+          (5120 - ((data.length * 16) / (8 * 1024)).toFixed(2)) +
+          " KB"
+      : "5 MB"
+  );
 };
 
 /* INDEXEDDB STUFF!!!!!!!!!! */
 /* https://www.youtube.com/watch?v=yZ26CXny3iI */
-function clearIndexedDb() {
+function clearOneFromIndexedDB(selectedCompany) {
+  // console.log("clear one");
+  const request = indexedDB.open("VLMImages", 2);
+  request.onsuccess = function (e) {
+    const db = request.result;
+    const transaction = db.transaction("images", "readwrite");
+    const objectStore = transaction.objectStore("images");
+    if (selectedCompany === "alkemy-x") {
+      objectStore.delete(1);
+    }
+    if (selectedCompany === "fellow") {
+      objectStore.delete(2);
+    }
+    if (selectedCompany === "gradient-pictures") {
+      objectStore.delete(3);
+    }
+    if (selectedCompany === "kroma-digital-cosmetics") {
+      objectStore.delete(4);
+    }
+    if (selectedCompany === "picture-north") {
+      objectStore.delete(5);
+    }
+    if (selectedCompany === "tessa-films") {
+      objectStore.delete(6);
+    }
+  };
+}
+function clearAllFromIndexedDB() {
   const request = indexedDB.open("VLMImages", 2);
   request.onsuccess = function (e) {
     const db = request.result;
