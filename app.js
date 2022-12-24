@@ -31,6 +31,7 @@ let colorStop2 = document.querySelector("#color-stop-2");
 let colorStop3 = document.querySelector("#color-stop-3");
 const colorStops = [colorStop1, colorStop2, colorStop3];
 let selectedCompany = "";
+let currentIMG = "";
 let hexColorArr = [];
 
 removeCodeBtn.addEventListener("click", () => {
@@ -53,24 +54,31 @@ removeThisCodeBtn.addEventListener("click", () => {
     localStorage.removeItem(`${selectedCompany}IMG`);
     getCodeFromLocalStorage();
     resetColorStopsAndPalettes();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvasImage();
     localStorageSpace();
   }
 });
+
+function clearCanvasImage() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 function resetAllColors() {
   localStorage.clear();
   getCodeFromLocalStorage();
   resetColorStopsAndPalettes();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clearCanvasImage();
+  clearIndexedDb();
 }
 function resetColorStopsAndPalettes() {
-  colorStop1.style.stopColor = "#000";
-  colorStop2.style.stopColor = "#000";
-  colorStop3.style.fill = "#000";
-  removeAllChildNodes(paletteContainer);
-  removeAllChildNodes(paletteContainer2);
-  removeAllChildNodes(paletteContainer3);
+  colorStops.forEach((colorStop, idx) => {
+    idx === 2
+      ? (colorStop.style.fill = "#000")
+      : (colorStop.style.stopColor = "#000");
+  });
+  paletteContainers.forEach((paletteContainer) => {
+    removeAllChildNodes(paletteContainer);
+  });
 }
 
 function removeAllChildNodes(parent) {
@@ -88,9 +96,11 @@ window.onload = () => {
     colors[i] = JSON.parse(localStorage.getItem(`${selectedCompany}${[i]}`));
     i++;
   }
-  colorStop1.style.stopColor = colors[1];
-  colorStop2.style.stopColor = colors[2];
-  colorStop3.style.fill = colors[3];
+  colorStops.forEach((colorStop, idx) => {
+    idx === 2
+      ? (colorStop.style.fill = colors[3])
+      : (colorStop.style.stopColor = colors[idx + 1]);
+  });
   loadBtn.addEventListener("click", () => {
     main();
   });
@@ -98,63 +108,58 @@ window.onload = () => {
 };
 
 companySelector.addEventListener("change", (e) => {
-  const currentCompanyIMG = window.atob(
-    window.localStorage.getItem(`${selectedCompany}IMG`)
-  );
   clearPalettes();
+  // clearCanvasImage();
   selectedCompany = e.target.value;
+  getIMGFromIndexedDB(selectedCompany);
   const color1 = localStorage.getItem(`${selectedCompany}1`);
   const color2 = localStorage.getItem(`${selectedCompany}2`);
   const color3 = localStorage.getItem(`${selectedCompany}3`);
   colorStop1.style.stopColor = JSON.parse(color1);
   colorStop2.style.stopColor = JSON.parse(color2);
   colorStop3.style.fill = JSON.parse(color3);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // const currentCompanyIMG = localStorage.getItem(`${selectedCompany}IMG`);
-  // console.log(currentCompanyIMG);
-  // const img = new Image();
-  // img.src = currentCompanyIMG;
-  // canvas.width = img.width;
-  // canvas.height = img.height;
-  // ctx.drawImage(img, 0, 0);
-  const stringArr = localStorage.getItem(`${selectedCompany}-hexcodes`);
-  const splitStringArr = stringArr.split(",");
-  // Now, we have an array of hex values
-  // We need to build the palettes
-  splitStringArr.forEach((hexColor) => {
-    const colorElement = document.createElement("div");
-    colorElement.className = "color-element";
-    colorElement.style.backgroundColor = hexColor;
-    colorElement.appendChild(document.createTextNode(hexColor));
-    let colorElement2 = colorElement.cloneNode(true);
-    let colorElement3 = colorElement.cloneNode(true);
-    colorElement.addEventListener("click", (e) => {
-      handleColorPalette(e, 1);
+  const selectedCompanyHexCodes = localStorage.getItem(
+    `${selectedCompany}-hexcodes`
+  );
+  if (selectedCompanyHexCodes) {
+    // const stringArr = localStorage.getItem(`${selectedCompany}-hexcodes`);
+    const stringArr = selectedCompanyHexCodes;
+    const splitStringArr = stringArr.split(",");
+    splitStringArr.forEach((hexColor) => {
+      const colorElement = document.createElement("div");
+      colorElement.className = "color-element";
+      colorElement.style.backgroundColor = hexColor;
+      colorElement.appendChild(document.createTextNode(hexColor));
+      let colorElement2 = colorElement.cloneNode(true);
+      let colorElement3 = colorElement.cloneNode(true);
+      colorElement.addEventListener("click", (e) => {
+        handleColorPalette(e, 1);
+      });
+      colorElement2.addEventListener("click", (e) => {
+        handleColorPalette(e, 2);
+      });
+      colorElement3.addEventListener("click", (e) => {
+        handleColorPalette(e, 3);
+      });
+      if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
+        paletteContainer.appendChild(colorElement);
+        paletteContainer2.appendChild(colorElement2);
+        paletteContainer3.appendChild(colorElement3);
+      }
+      if (colorElement.textContent === JSON.parse(color1)) {
+        colorElement.style.border = "3px solid #000";
+        colorElement.style.borderRadius = "50%";
+      }
+      if (colorElement2.textContent === JSON.parse(color2)) {
+        colorElement2.style.border = "3px solid #000";
+        colorElement2.style.borderRadius = "50%";
+      }
+      if (colorElement3.textContent === JSON.parse(color3)) {
+        colorElement3.style.border = "3px solid #000";
+        colorElement3.style.borderRadius = "50%";
+      }
     });
-    colorElement2.addEventListener("click", (e) => {
-      handleColorPalette(e, 2);
-    });
-    colorElement3.addEventListener("click", (e) => {
-      handleColorPalette(e, 3);
-    });
-    if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
-      paletteContainer.appendChild(colorElement);
-      paletteContainer2.appendChild(colorElement2);
-      paletteContainer3.appendChild(colorElement3);
-    }
-    if (colorElement.textContent === JSON.parse(color1)) {
-      colorElement.style.border = "3px solid #000";
-      colorElement.style.borderRadius = "50%";
-    }
-    if (colorElement2.textContent === JSON.parse(color2)) {
-      colorElement2.style.border = "3px solid #000";
-      colorElement2.style.borderRadius = "50%";
-    }
-    if (colorElement3.textContent === JSON.parse(color3)) {
-      colorElement3.style.border = "3px solid #000";
-      colorElement3.style.borderRadius = "50%";
-    }
-  });
+  }
 });
 
 function visiblyIndicateColor(colorElements, selectedColor) {
@@ -242,17 +247,6 @@ const main = () => {
   const image = new Image();
   const file = imgFile.files[0];
   const fileReader = new FileReader();
-  // loadBtn.disabled = false;
-  // console.log(imgFile);
-  // imgFile.addEventListener("click", function () {
-  //   console.log("click");
-  //   // this.value = null;
-  //   // loadBtn.disabled = false;
-  // });
-  // imgFile.addEventListener("change", function () {
-  //   console.log("hey");
-  //   loadBtn.disabled = false;
-  // });
 
   // Whenever file & image is loaded procced to extract the information from the image
   fileReader.onload = () => {
@@ -274,7 +268,8 @@ const main = () => {
       /* ======================================================= */
       /* ======================================================= */
       /* GREGG IMAGE EXPERIMENT!!!!! */
-      // let imgAsDataURL = canvas.toDataURL("image/jpg");
+      let imgAsDataURL = canvas.toDataURL("image/jpg");
+      saveIMGToIndexedDB(selectedCompany, imgAsDataURL);
       // console.log(window.btoa(imgAsDataURL));
       // localStorage.setItem(`${selectedCompany}IMG`, window.btoa(imgAsDataURL));
       // localStorage.setItem(`${selectedCompany}IMG`, imgAsDataURL);
@@ -299,8 +294,16 @@ const main = () => {
     };
     image.src = fileReader.result;
   };
-  fileReader.readAsDataURL(file);
+  if (file) {
+    fileReader.readAsDataURL(file);
+  }
+  // fileReader.readAsDataURL(file);
   imgFile.value = "";
+  // colorStops.forEach((colorStop, idx) => {
+  //   idx === 2
+  //     ? (colorStop.style.fill = "#000")
+  //     : (colorStop.style.stopColor = "#000");
+  // });
 };
 
 function clearPalettes() {
@@ -418,32 +421,199 @@ copyCodeBtn.addEventListener("click", () => {
 
 const localStorageSpace = function () {
   var data = "";
-  console.log("Current local storage: ");
-  for (var key in window.localStorage) {
-    if (window.localStorage.hasOwnProperty(key)) {
-      data += window.localStorage[key];
-      console.log(
-        key +
-          " = " +
-          ((window.localStorage[key].length * 16) / (8 * 1024)).toFixed(2) +
-          " KB"
-      );
-    }
-  }
+  // console.log("Current local storage: ");
+  // for (var key in window.localStorage) {
+  //   if (window.localStorage.hasOwnProperty(key)) {
+  //     data += window.localStorage[key];
+  //     console.log(
+  //       key +
+  //         " = " +
+  //         ((window.localStorage[key].length * 16) / (8 * 1024)).toFixed(2) +
+  //         " KB"
+  //     );
+  //   }
+  // }
 
-  console.log(
-    data
-      ? "\n" +
-          "Total space used: " +
-          ((data.length * 16) / (8 * 1024)).toFixed(2) +
-          " KB"
-      : "Empty (0 KB)"
-  );
-  console.log(
-    data
-      ? "Approx. space remaining: " +
-          (5120 - ((data.length * 16) / (8 * 1024)).toFixed(2)) +
-          " KB"
-      : "5 MB"
-  );
+  // console.log(
+  //   data
+  //     ? "\n" +
+  //         "Total space used: " +
+  //         ((data.length * 16) / (8 * 1024)).toFixed(2) +
+  //         " KB"
+  //     : "Empty (0 KB)"
+  // );
+  // console.log(
+  //   data
+  //     ? "Approx. space remaining: " +
+  //         (5120 - ((data.length * 16) / (8 * 1024)).toFixed(2)) +
+  //         " KB"
+  //     : "5 MB"
+  // );
 };
+
+/* INDEXEDDB STUFF!!!!!!!!!! */
+/* https://www.youtube.com/watch?v=yZ26CXny3iI */
+function clearIndexedDb() {
+  const request = indexedDB.open("VLMImages", 2);
+  request.onsuccess = function (e) {
+    const db = request.result;
+    const transaction = db.transaction("images", "readwrite");
+    const objectStore = transaction.objectStore("images");
+    objectStore.clear();
+  };
+}
+
+function getIMGFromIndexedDB(selectedCompany) {
+  console.log(selectedCompany);
+  const request = indexedDB.open("VLMImages", 2);
+  request.onsuccess = function (e) {
+    const db = request.result;
+    const transaction = db.transaction("images", "readwrite");
+    // Get a reference to your objectStore
+    const store = transaction.objectStore("images");
+    let idQuery;
+    if (selectedCompany === "alkemy-x") {
+      idQuery = store.get(1);
+    }
+    if (selectedCompany === "fellow") {
+      idQuery = store.get(2);
+    }
+    if (selectedCompany === "gradient-pictures") {
+      idQuery = store.get(3);
+    }
+    if (selectedCompany === "kroma-digital-cosmetics") {
+      idQuery = store.get(4);
+    }
+    if (selectedCompany === "picture-north") {
+      idQuery = store.get(5);
+    }
+    if (selectedCompany === "tessa-films") {
+      idQuery = store.get(6);
+    }
+    idQuery.onsuccess = function () {
+      console.log("idQuery", idQuery.result);
+      // console.log(idQuery.result.imgData);
+      // currentIMG = idQuery.result.imgData;
+      const img = new Image();
+      // img.src = currentIMG;
+      img.src = idQuery.result.imgData;
+      transaction.oncomplete = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        db.close();
+      };
+    };
+  };
+}
+function saveIMGToIndexedDB(selectedCompany, base64Data) {
+  const indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB ||
+    window.shimIndexedDB;
+  // let db;
+  // Makes a request to the user to open up a database
+  // If it doesn't exist yet, it's created. If it does exist, it's simply opened.
+  // The second arg is the version of the database. The coder gives this number so that, whenever the
+  // db schema is updated(structure/schema is changed), the version number can be upgraded.
+  // If this number is changed and the user opens the app, the onupgradeneeded function will run
+  // telling the user the db needs to be upgraded
+  const request = indexedDB.open("VLMImages", 2);
+
+  request.onerror = function (e) {
+    console.error(`Database error: ${event.target.errorCode}`);
+  };
+
+  // onupgradeneeded is run when: new db is created or changed/upgraded
+  // Since this runs when db is created, it gives you opportunity to set up the structure/schema
+
+  request.onupgradeneeded = (event) => {
+    // Save the IDBDatabase interface
+    // const db = event.target.result;
+    const db = request.result;
+    // console.log("onupgrade");
+    // Create an objectStore for this database
+    // objectStore is like an SQL table or NoSQL collection
+    // keyPath is like a Primary Key
+    const objectStore = db.createObjectStore("images", { keyPath: "id" });
+    // createIndex (how do you want to be able to look up the data?)
+    // The 2nd arg is the property on the object?
+    // The 1st arg is the name of the index?
+    // objectStore.createIndex("customer_name", ["name"], { unique: false });
+    // objectStore.createIndex("customer_email", ["email"], { unique: true });
+    // Compound Index Experiment
+    // objectStore.createIndex("name_and_email", ["name", "email"], {
+    //   unique: true,
+    // });
+
+    // const transaction = db.transaction(["customers"], "readwrite");
+    // console.log(transaction);
+    objectStore.createIndex("roster_name", ["name"], { unique: true });
+    objectStore.createIndex("img_data", ["imgData"], { unique: true });
+  };
+
+  // onsuccess will run after onupgradeneeded
+  request.onsuccess = function (e) {
+    // const db = e.target.result;
+    const db = request.result;
+    // // A transaction makes several DB actions occur all together(at the same time)
+    // // If one of them fails, they all fail.
+    const transaction = db.transaction("images", "readwrite");
+    // Get a reference to your objectStore
+    const store = transaction.objectStore("images");
+    const nameIndex = store.index("roster_name");
+    // NOW, ADD SOME DATA
+    if (selectedCompany === "alkemy-x") {
+      store.put({ id: 1, name: "alkemy-x", imgData: base64Data });
+    }
+    if (selectedCompany === "fellow") {
+      store.put({ id: 2, name: "fellow", imgData: base64Data });
+    }
+    if (selectedCompany === "gradient-pictures") {
+      store.put({ id: 3, name: "gradient-pictures", imgData: base64Data });
+    }
+    if (selectedCompany === "kroma-digital-cosmetics") {
+      store.put({
+        id: 4,
+        name: "kroma-digital-cosmetics",
+        imgData: base64Data,
+      });
+    }
+    if (selectedCompany === "picture-north") {
+      store.put({ id: 5, name: "picture-north", imgData: base64Data });
+    }
+    if (selectedCompany === "tessa-films") {
+      store.put({ id: 6, name: "tessa-films", imgData: base64Data });
+    }
+    // For compound queries
+    // store.put({id: 1, name: "GFine", email: "gf@gmail.com"});
+    // MAKE QUERIES
+    // gets the first one found
+    // const idQuery = store.get(1);
+    // gets all that are found
+    // const nameQuery = nameIndex.getAll(["GFine"]);
+    const nameQuery = nameIndex.getAll();
+    // You can make one of these for each query you run
+    // idQuery.onsuccess = function () {
+    //   console.log("idQuery", idQuery.result);
+    // };
+    nameQuery.onsuccess = function () {
+      console.log("nameQuery", nameQuery.result);
+    };
+    // DB CLEANUP
+    transaction.oncomplete = function () {
+      db.close();
+    };
+    // objectStore.transaction.oncomplete = (event) => {
+    //   // Store values in the newly created objectStore.
+    //   const customerObjectStore = db
+    //     .transaction("customers", "readwrite")
+    //     .objectStore("customers");
+    //   customerData.forEach((customer) => {
+    //     customerObjectStore.add(customer);
+    //   });
+    // };
+  };
+}
