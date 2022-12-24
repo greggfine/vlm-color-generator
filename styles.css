@@ -1,16 +1,7 @@
 :root {
   --vlmGreen: #165f16;
   --boxShadow1: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-}
-.company-selector {
-  padding: 8px 0 8px 2px;
-  font-weight: 900;
-  height: 50px;
-}
-form {
-  margin-top: 30px;
-  display: flex;
-  gap: 20px;
+  --btnRadius: 8px;
 }
 body {
   display: flex;
@@ -18,10 +9,12 @@ body {
   align-items: center;
   flex-direction: column;
   font-family: "Arial", sans-serif;
+  box-sizing: border-box;
+  margin: 0;
 }
 .btn {
   padding: 8px;
-  border-radius: 6px;
+  /* border-radius: 6px; */
   box-shadow: var(--boxShadow1);
   color: var(--vlmGreen);
   border-color: var(--vlmGreen);
@@ -34,14 +27,56 @@ body {
   background-color: var(--vlmGreen);
   color: #fff;
 }
-
-h1 {
-  font-weight: bold;
-  font-size: 3rem;
-  letter-spacing: -4.5px;
+.button-28 {
+  appearance: none;
+  background-color: transparent;
+  border: 1px solid #1a1a1a;
+  border-radius: var(--btnRadius);
+  box-sizing: border-box;
+  color: #3b3b3b;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-height: 40px;
+  min-width: 0;
+  outline: none;
+  padding: 12x 20x;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  /* width: 100%; */
+  will-change: transform;
+  /* flex-basis: 200px; */
 }
-form {
-  margin: 20px;
+
+.button-28:disabled {
+  pointer-events: none;
+}
+
+.button-28:hover {
+  color: #fff;
+  background-color: red;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-28:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+.btn-success {
+  background-color: #fff;
+}
+.btn-success:hover {
+  background-color: #4bb543;
 }
 canvas {
   border-top-left-radius: 10px;
@@ -50,22 +85,38 @@ canvas {
   max-height: 200px;
   margin-bottom: 20px;
 }
-.color-box {
+.code-box {
+  margin-top: 40px;
+  border: 1.5px dotted #000;
+  padding: 2rem;
+  width: min-content;
+  min-width: 90%;
+  background-color: #eee;
+  border-radius: 20px;
+}
+.code-btns {
+  margin: 40px;
+  display: flex;
+  justify-content: space-around;
   width: 90%;
 }
-.divider {
-  height: 2px;
-  background-color: rgba(0, 0, 0, 0.1);
-  width: 100%;
-}
-input[type="file"] {
-  padding: 8px;
+.color-box {
+  width: 90%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  padding: 10px;
   border-radius: 6px;
-  border: 1px solid #000;
 }
-svg {
-  width: 70%;
-  padding-top: 45px;
+.color-element:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+.color1-element,
+.color2-element,
+.color3-element {
+  color: #fff;
+  padding: 8px;
 }
 .color-palette {
   font-weight: 900;
@@ -73,12 +124,40 @@ svg {
   border-bottom: 1px solid #000;
   padding: 0.5rem 0.75rem;
   background-color: #f4f4f4;
+  min-width: fit-content;
 }
-.palette-wrap {
-  margin-top: 20px;
-  margin-bottom: 20px;
+
+.company-selector {
+  font-weight: 900;
+  border-radius: 3px;
+  padding: 18px;
+  background-color: #040439;
+  color: #fff;
+}
+.divider {
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+form {
+  margin: 30px 20px 20px 20px;
   display: flex;
-  align-items: center;
+  gap: 20px;
+}
+h1 {
+  font-weight: bold;
+  font-size: 3rem;
+  letter-spacing: -4.5px;
+}
+input[type="file"] {
+  border-radius: 6px;
+  border: 1px solid #000;
+  padding: 8px;
+  background-color: #fff;
+}
+svg {
+  width: 70%;
+  padding-top: 45px;
 }
 #palette-1,
 #palette-2,
@@ -106,33 +185,16 @@ svg {
   -moz-osx-font-smoothing: grayscale;
   text-shadow: 1px 1px #333;
 }
-
-.code {
-  margin-top: 40px;
-  border: 1.5px dotted #000;
-  padding: 1rem;
-  width: min-content;
-  min-width: 90%;
-  background-color: #e7e7e7;
-}
-
-.color-element:hover {
-  cursor: pointer;
-  transform: scale(1.05);
-}
-.color1-element,
-.color2-element,
-.color3-element {
-  color: #fff;
-  padding: 8px;
-}
-.code-btns {
-  margin-top: 40px;
+.palette-wrap {
+  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
-  justify-content: space-around;
-  /* gap: 20px; */
-  width: 90%;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid #000; */
+  padding: 0 40px;
 }
+
 .removeCodeBtn {
   color: red;
   border: 1px solid red;
@@ -148,54 +210,23 @@ svg {
 .selector-inputs-wrap {
   display: flex;
   align-items: center;
-}
-
-.button-28 {
-  appearance: none;
-  background-color: transparent;
-  border: 2px solid #1a1a1a;
-  border-radius: 15px;
-  box-sizing: border-box;
-  color: #3b3b3b;
-  cursor: pointer;
-  display: inline-block;
-  font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 16px;
-  font-weight: 600;
-  line-height: normal;
-  margin: 0;
-  min-height: 60px;
-  min-width: 0;
-  outline: none;
-  padding: 16px 24px;
-  text-align: center;
-  text-decoration: none;
-  transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+  justify-content: center;
   width: 100%;
-  will-change: transform;
-  flex-basis: 200px;
+  background-color: #eee;
+  background: linear-gradient(to right, #eee, #ccc);
+  padding: 20px;
+  box-shadow: 2px -1px 7px 6px #0000004d;
 }
-
-.button-28:disabled {
-  pointer-events: none;
-}
-
-.button-28:hover {
-  color: #fff;
-  background-color: red;
-  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-  transform: translateY(-2px);
-}
-
-.button-28:active {
-  box-shadow: none;
-  transform: translateY(0);
-}
-
 .svg-wrap {
   display: flex;
+  padding-bottom: 40px;
+}
+
+@media screen and (max-width: 960px) {
+  .code-box {
+    min-width: 80%;
+  }
+  .selector-inputs-wrap {
+    flex-direction: column;
+  }
 }
