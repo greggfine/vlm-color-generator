@@ -106,25 +106,14 @@ window.onload = () => {
   loadBtn.addEventListener("click", () => {
     main();
   });
-  localStorageSpace();
-};
-
-companySelector.addEventListener("change", (e) => {
-  clearPalettes();
-  clearCanvasImage();
-  selectedCompany = e.target.value;
-  getIMGFromIndexedDB(selectedCompany);
-  const color1 = localStorage.getItem(`${selectedCompany}1`);
-  const color2 = localStorage.getItem(`${selectedCompany}2`);
-  const color3 = localStorage.getItem(`${selectedCompany}3`);
-  colorStop1.style.stopColor = JSON.parse(color1);
-  colorStop2.style.stopColor = JSON.parse(color2);
-  colorStop3.style.fill = JSON.parse(color3);
+  // localStorageSpace();
   const selectedCompanyHexCodes = localStorage.getItem(
     `${selectedCompany}-hexcodes`
   );
+  const color1 = localStorage.getItem(`${selectedCompany}1`);
+  const color2 = localStorage.getItem(`${selectedCompany}2`);
+  const color3 = localStorage.getItem(`${selectedCompany}3`);
   if (selectedCompanyHexCodes) {
-    // const stringArr = localStorage.getItem(`${selectedCompany}-hexcodes`);
     const stringArr = selectedCompanyHexCodes;
     const splitStringArr = stringArr.split(",");
     splitStringArr.forEach((hexColor) => {
@@ -149,15 +138,63 @@ companySelector.addEventListener("change", (e) => {
         paletteContainer3.appendChild(colorElement3);
       }
       if (colorElement.textContent === JSON.parse(color1)) {
-        // colorElement.style.border = "3px solid #000";
         colorElement.style.borderRadius = "50%";
       }
       if (colorElement2.textContent === JSON.parse(color2)) {
-        // colorElement2.style.border = "3px solid #000";
         colorElement2.style.borderRadius = "50%";
       }
       if (colorElement3.textContent === JSON.parse(color3)) {
-        // colorElement3.style.border = "3px solid #000";
+        colorElement3.style.borderRadius = "50%";
+      }
+    });
+  }
+};
+
+companySelector.addEventListener("change", (e) => {
+  clearPalettes();
+  clearCanvasImage();
+  selectedCompany = e.target.value;
+  getIMGFromIndexedDB(selectedCompany);
+  const color1 = localStorage.getItem(`${selectedCompany}1`);
+  const color2 = localStorage.getItem(`${selectedCompany}2`);
+  const color3 = localStorage.getItem(`${selectedCompany}3`);
+  colorStop1.style.stopColor = JSON.parse(color1);
+  colorStop2.style.stopColor = JSON.parse(color2);
+  colorStop3.style.fill = JSON.parse(color3);
+  const selectedCompanyHexCodes = localStorage.getItem(
+    `${selectedCompany}-hexcodes`
+  );
+  if (selectedCompanyHexCodes) {
+    const stringArr = selectedCompanyHexCodes;
+    const splitStringArr = stringArr.split(",");
+    splitStringArr.forEach((hexColor) => {
+      const colorElement = document.createElement("div");
+      colorElement.className = "color-element";
+      colorElement.style.backgroundColor = hexColor;
+      colorElement.appendChild(document.createTextNode(hexColor));
+      let colorElement2 = colorElement.cloneNode(true);
+      let colorElement3 = colorElement.cloneNode(true);
+      colorElement.addEventListener("click", (e) => {
+        handleColorPalette(e, 1);
+      });
+      colorElement2.addEventListener("click", (e) => {
+        handleColorPalette(e, 2);
+      });
+      colorElement3.addEventListener("click", (e) => {
+        handleColorPalette(e, 3);
+      });
+      if (colorElement.style.backgroundColor != "rgb(255, 255, 255)") {
+        paletteContainer.appendChild(colorElement);
+        paletteContainer2.appendChild(colorElement2);
+        paletteContainer3.appendChild(colorElement3);
+      }
+      if (colorElement.textContent === JSON.parse(color1)) {
+        colorElement.style.borderRadius = "50%";
+      }
+      if (colorElement2.textContent === JSON.parse(color2)) {
+        colorElement2.style.borderRadius = "50%";
+      }
+      if (colorElement3.textContent === JSON.parse(color3)) {
         colorElement3.style.borderRadius = "50%";
       }
     });
@@ -493,7 +530,7 @@ function clearAllFromIndexedDB() {
 }
 
 function getIMGFromIndexedDB(selectedCompany) {
-  console.log(selectedCompany);
+  // console.log(selectedCompany);
   const request = indexedDB.open("VLMImages", 2);
   request.onsuccess = function (e) {
     const db = request.result;
@@ -520,7 +557,7 @@ function getIMGFromIndexedDB(selectedCompany) {
       idQuery = store.get(6);
     }
     idQuery.onsuccess = function () {
-      console.log("idQuery", idQuery.result);
+      // console.log("idQuery", idQuery.result);
       // console.log(idQuery.result.imgData);
       // currentIMG = idQuery.result.imgData;
       const img = new Image();
