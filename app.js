@@ -149,15 +149,15 @@ companySelector.addEventListener("change", (e) => {
         paletteContainer3.appendChild(colorElement3);
       }
       if (colorElement.textContent === JSON.parse(color1)) {
-        colorElement.style.border = "3px solid #000";
+        // colorElement.style.border = "3px solid #000";
         colorElement.style.borderRadius = "50%";
       }
       if (colorElement2.textContent === JSON.parse(color2)) {
-        colorElement2.style.border = "3px solid #000";
+        // colorElement2.style.border = "3px solid #000";
         colorElement2.style.borderRadius = "50%";
       }
       if (colorElement3.textContent === JSON.parse(color3)) {
-        colorElement3.style.border = "3px solid #000";
+        // colorElement3.style.border = "3px solid #000";
         colorElement3.style.borderRadius = "50%";
       }
     });
@@ -170,10 +170,10 @@ function visiblyIndicateColor(colorElements, selectedColor) {
   // Else, reset the border style
   colorElements.forEach((colorEl) => {
     if (colorEl.textContent === selectedColor) {
-      colorEl.style.border = "3px solid #000";
+      // colorEl.style.border = "3px solid #000";
       colorEl.style.borderRadius = "50%";
     } else {
-      colorEl.style.border = "none";
+      // colorEl.style.border = "none";
       colorEl.style.borderRadius = "0%";
     }
   });
@@ -341,10 +341,10 @@ function buildPaletteElement(hexColor) {
 function visiblyIndicateColor(colorElements, selectedColor) {
   colorElements.forEach((colorEl) => {
     if (colorEl.textContent === selectedColor) {
-      colorEl.style.border = "3px solid #000";
+      // colorEl.style.border = "3px solid #000";
       colorEl.style.borderRadius = "50%";
     } else {
-      colorEl.style.border = "none";
+      // colorEl.style.border = "none";
       colorEl.style.borderRadius = "0%";
     }
   });

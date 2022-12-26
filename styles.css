@@ -28,7 +28,9 @@ body {
   color: #fff;
 }
 .button-28 {
-  appearance: none;
+  padding: 0.5rem 1rem;
+  transition: all 120ms;
+  /*👉  appearance: none;
   background-color: transparent;
   border: 1px solid #1a1a1a;
   border-radius: var(--btnRadius);
@@ -52,9 +54,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  /* width: 100%; */
-  will-change: transform;
-  /* flex-basis: 200px; */
+  will-change: transform;👈*/
 }
 
 .button-28:disabled {
@@ -66,6 +66,7 @@ body {
   background-color: red;
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
+  cursor: pointer;
 }
 
 .button-28:active {
@@ -79,20 +80,18 @@ body {
   background-color: #4bb543;
 }
 canvas {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  max-width: 200px;
-  max-height: 200px;
-  margin-bottom: 20px;
+  max-width: 300px;
+  max-height: 300px;
 }
 .code-box {
   margin-top: 40px;
   border: 1.5px dotted #000;
   padding: 2rem;
   width: min-content;
+  box-sizing: border-box;
   min-width: 90%;
   background-color: #eee;
-  border-radius: 20px;
+  /* border-radius: 20px; */
 }
 .code-btns {
   margin: 40px;
@@ -106,7 +105,8 @@ canvas {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   padding: 10px;
-  border-radius: 6px;
+  box-sizing: border-box;
+  margin-top: 20px;
 }
 .color-element:hover {
   cursor: pointer;
@@ -134,6 +134,7 @@ canvas {
   background-color: #040439;
   color: #fff;
 }
+
 .divider {
   height: 2px;
   background-color: rgba(0, 0, 0, 0.1);
@@ -154,10 +155,6 @@ input[type="file"] {
   border: 1px solid #000;
   padding: 8px;
   background-color: #fff;
-}
-svg {
-  width: 70%;
-  padding-top: 45px;
 }
 #palette-1,
 #palette-2,
@@ -219,7 +216,20 @@ svg {
 }
 .svg-wrap {
   display: flex;
-  padding-bottom: 40px;
+  align-items: center;
+  gap: 20px;
+  max-width: 90%;
+  /* border: 1px solid #000; */
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 20px;
+}
+.vlm-logo {
+  min-width: 400px;
+  max-width: 400px;
+}
+.vlm-play-btn {
+  max-width: 400px;
 }
 
 @media screen and (max-width: 960px) {
@@ -228,5 +238,10 @@ svg {
   }
   .selector-inputs-wrap {
     flex-direction: column;
+  }
+  .svg-wrap {
+    flex-direction: column;
+    /* border: 1px solid #000; */
+    width: 100%;
   }
 }
