@@ -7,7 +7,7 @@ const companies = [
   "tessa-films",
 ];
 
-const indexedDBVersion = 8;
+const indexedDBVersion = 2;
 const loadBtn = document.querySelector("#btnLoad");
 const companySelector = document.querySelector("#company-selector");
 const currentCompany = document.querySelector("#current-company");
@@ -39,7 +39,9 @@ let hexColorArr = [];
 
 window.onload = () => {
   selectedCompany = companies[0];
-  loadBtn.addEventListener("click", processIMG);
+  loadBtn.addEventListener("click", () => {
+    processIMG();
+  });
   getIMGFromIndexedDB(selectedCompany);
   applyColorsToSVGs(selectedCompany);
   getCodeForCodeBox();
@@ -53,18 +55,16 @@ window.onload = () => {
 };
 
 removeCodeBtn.addEventListener("click", () => {
-  const answer =
-    prompt("Are you sure you want to remove all colors?", "yes") || "no";
-  if (answer === "yes") {
+  const answer = prompt("Are you sure you want to remove all colors?", "yes");
+  if (answer) {
     resetAllColors();
     localStorageSpace();
   }
 });
 
 removeThisCodeBtn.addEventListener("click", () => {
-  const answer =
-    prompt("Are you sure you want to remove this color?", "yes") || "no";
-  if (answer === "yes") {
+  const answer = prompt("Are you sure you want to remove this color?", "yes");
+  if (answer) {
     let i = 1;
     while (i <= numPalettes) {
       localStorage.removeItem(`${selectedCompany}${i}`);
@@ -91,7 +91,6 @@ function resetAllColors() {
   clearCanvasImage();
   clearAllFromIndexedDB();
 }
-
 function resetColorStopsAndPalettes() {
   colorsForSVGs.forEach((colorStop, idx) => {
     idx === 2
@@ -229,10 +228,7 @@ function clearPalettes() {
 function buildPaletteElement(hexColor, companyColors) {
   const colorElement1 = document.createElement("div");
   colorElement1.className = "color-element";
-  console.log(hexColor);
   colorElement1.style.backgroundColor = hexColor;
-  // colorElement1.style.backgroundColor = "red";
-  // console.log(colorElement1);
   if (hexColor !== "#FFFFFF") {
     colorElement1.appendChild(document.createTextNode(hexColor));
   }
@@ -380,34 +376,30 @@ function clearAllFromIndexedDB() {
 }
 
 function getIMGFromIndexedDB(selectedCompany) {
-  try {
-    const request = indexedDB.open("VLMImages", indexedDBVersion);
-    request.onsuccess = function (e) {
-      const db = request.result;
-      const transaction = db.transaction("images", "readwrite");
-      const store = transaction.objectStore("images");
-      let idQuery;
-      companies.forEach((company, idx) => {
-        if (company === selectedCompany) {
-          idQuery = store.get(idx + 1);
-        }
-      });
-      idQuery.onsuccess = function () {
-        const img = new Image();
-        if (idQuery.result) {
-          img.src = idQuery.result.imgData;
-        }
-        transaction.oncomplete = function () {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          db.close();
-        };
+  const request = indexedDB.open("VLMImages", indexedDBVersion);
+  request.onsuccess = function (e) {
+    const db = request.result;
+    const transaction = db.transaction("images", "readwrite");
+    const store = transaction.objectStore("images");
+    let idQuery;
+    companies.forEach((company, idx) => {
+      if (company === selectedCompany) {
+        idQuery = store.get(idx + 1);
+      }
+    });
+    idQuery.onsuccess = function () {
+      const img = new Image();
+      if (idQuery.result) {
+        img.src = idQuery.result.imgData;
+      }
+      transaction.oncomplete = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        db.close();
       };
     };
-  } catch (error) {
-    console.error(error);
-  }
+  };
 }
 function saveIMGToIndexedDB(selectedCompany, base64Data) {
   const indexedDB =
@@ -419,11 +411,10 @@ function saveIMGToIndexedDB(selectedCompany, base64Data) {
   const request = indexedDB.open("VLMImages", indexedDBVersion);
 
   request.onerror = function (e) {
-    console.error(`Database error: ${e.target.errorCode}`);
+    console.error(`Database error: ${event.target.errorCode}`);
   };
 
   request.onupgradeneeded = (event) => {
-    console.log("oun");
     const db = request.result;
     const objectStore = db.createObjectStore("images", { keyPath: "id" });
     objectStore.createIndex("roster_name", ["name"], { unique: true });
@@ -444,6 +435,7 @@ function saveIMGToIndexedDB(selectedCompany, base64Data) {
     nameQuery.onsuccess = function () {
       console.log("nameQuery", nameQuery.result);
     };
+    // DB CLEANUP
     transaction.oncomplete = function () {
       db.close();
     };
