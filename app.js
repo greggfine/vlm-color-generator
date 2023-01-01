@@ -7,7 +7,6 @@ const companies = [
   "tessa-films",
 ];
 
-const indexedDBVersion = 8;
 const loadBtn = document.querySelector("#btnLoad");
 const companySelector = document.querySelector("#company-selector");
 const currentCompany = document.querySelector("#current-company");
@@ -229,10 +228,7 @@ function clearPalettes() {
 function buildPaletteElement(hexColor, companyColors) {
   const colorElement1 = document.createElement("div");
   colorElement1.className = "color-element";
-  console.log(hexColor);
   colorElement1.style.backgroundColor = hexColor;
-  // colorElement1.style.backgroundColor = "red";
-  // console.log(colorElement1);
   if (hexColor !== "#FFFFFF") {
     colorElement1.appendChild(document.createTextNode(hexColor));
   }
@@ -409,6 +405,7 @@ function getIMGFromIndexedDB(selectedCompany) {
     console.error(error);
   }
 }
+const indexedDBVersion = 20;
 function saveIMGToIndexedDB(selectedCompany, base64Data) {
   const indexedDB =
     window.indexedDB ||
@@ -416,22 +413,17 @@ function saveIMGToIndexedDB(selectedCompany, base64Data) {
     window.webkitIndexedDB ||
     window.msIndexedDB ||
     window.shimIndexedDB;
+  let db = null;
+  let objectStore = null;
   const request = indexedDB.open("VLMImages", indexedDBVersion);
 
-  request.onerror = function (e) {
-    console.error(`Database error: ${e.target.errorCode}`);
-  };
+  request.addEventListener("error", (err) => {
+    console.warn(err);
+  });
 
-  request.onupgradeneeded = (event) => {
-    console.log("oun");
-    const db = request.result;
-    const objectStore = db.createObjectStore("images", { keyPath: "id" });
-    objectStore.createIndex("roster_name", ["name"], { unique: true });
-    objectStore.createIndex("img_data", ["imgData"], { unique: true });
-  };
-
-  request.onsuccess = function (e) {
-    const db = request.result;
+  request.addEventListener("success", (ev) => {
+    db = ev.target.result;
+    console.log("success", db);
     const transaction = db.transaction("images", "readwrite");
     const store = transaction.objectStore("images");
     const nameIndex = store.index("roster_name");
@@ -447,5 +439,47 @@ function saveIMGToIndexedDB(selectedCompany, base64Data) {
     transaction.oncomplete = function () {
       db.close();
     };
-  };
+  });
+
+  request.addEventListener("upgradeneeded", (ev) => {
+    db = ev.target.result;
+    let oldVersion = ev.oldVersion;
+    let newVersion = ev.newVersion || db.version;
+    console.log("DB updated from version", oldVersion, "to", newVersion);
+    if (!db.objectStoreNames.contains("images")) {
+      objectStore = db.createObjectStore("images", { keyPath: "id" });
+      objectStore.createIndex("roster_name", ["name"], { unique: true });
+      objectStore.createIndex("img_data", ["imgData"], { unique: true });
+    }
+  });
+
+  // request.onerror = function (e) {
+  //   console.error(`Database error: ${e.target.errorCode}`);
+  // };
+
+  // request.onupgradeneeded = (event) => {
+  //   const db = request.result;
+  //   const objectStore = db.createObjectStore("images", { keyPath: "id" });
+  //   objectStore.createIndex("roster_name", ["name"], { unique: true });
+  //   objectStore.createIndex("img_data", ["imgData"], { unique: true });
+  // };
+
+  // request.onsuccess = function (e) {
+  //   const db = request.result;
+  //   const transaction = db.transaction("images", "readwrite");
+  //   const store = transaction.objectStore("images");
+  //   const nameIndex = store.index("roster_name");
+  //   companies.forEach((company, idx) => {
+  //     if (company === selectedCompany) {
+  //       store.put({ id: idx + 1, name: company, imgData: base64Data });
+  //     }
+  //   });
+  //   const nameQuery = nameIndex.getAll();
+  //   nameQuery.onsuccess = function () {
+  //     console.log("nameQuery", nameQuery.result);
+  //   };
+  //   transaction.oncomplete = function () {
+  //     db.close();
+  //   };
+  // };
 }
