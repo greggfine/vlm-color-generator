@@ -7,7 +7,7 @@ const companies = [
   "tessa-films",
 ];
 
-const indexedDBVersion = 24;
+const indexedDBVersion = 25;
 const loadBtn = document.querySelector("#btnLoad");
 const companySelector = document.querySelector("#company-selector");
 const currentCompany = document.querySelector("#current-company");
