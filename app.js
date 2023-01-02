@@ -7,6 +7,7 @@ const companies = [
   "tessa-films",
 ];
 
+const indexedDBVersion = 24;
 const loadBtn = document.querySelector("#btnLoad");
 const companySelector = document.querySelector("#company-selector");
 const currentCompany = document.querySelector("#current-company");
@@ -383,32 +384,33 @@ function getIMGFromIndexedDB(selectedCompany) {
     const request = indexedDB.open("VLMImages", indexedDBVersion);
     request.onsuccess = function (e) {
       const db = request.result;
-      const transaction = db.transaction("images", "readwrite");
-      const store = transaction.objectStore("images");
-      let idQuery;
-      companies.forEach((company, idx) => {
-        if (company === selectedCompany) {
-          idQuery = store.get(idx + 1);
-        }
-      });
-      idQuery.onsuccess = function () {
-        const img = new Image();
-        if (idQuery.result) {
-          img.src = idQuery.result.imgData;
-        }
-        transaction.oncomplete = function () {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          db.close();
+      if (db.transaction("images", "readwrite")) {
+        const transaction = db.transaction("images", "readwrite");
+        const store = transaction.objectStore("images");
+        let idQuery;
+        companies.forEach((company, idx) => {
+          if (company === selectedCompany) {
+            idQuery = store.get(idx + 1);
+          }
+        });
+        idQuery.onsuccess = function () {
+          const img = new Image();
+          if (idQuery.result) {
+            img.src = idQuery.result.imgData;
+          }
+          transaction.oncomplete = function () {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            db.close();
+          };
         };
-      };
+      }
     };
   } catch (error) {
     console.error(error);
   }
 }
-const indexedDBVersion = 20;
 function saveIMGToIndexedDB(selectedCompany, base64Data) {
   const indexedDB =
     window.indexedDB ||
