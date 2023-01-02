@@ -186,19 +186,22 @@ function getCodeForCodeBox() {
   localStorageDisplay.textContent = `const colors = ${JSON.stringify(
     formattedHexCodes
   )};`;
+  // localStorageDisplay.style.width = "50%";
+  // localStorageDisplay.style.overflow = "hidden";
 }
 
 const processIMG = () => {
   const imgFile = document.getElementById("imgfile");
   const image = new Image();
   const file = imgFile.files[0];
-  if (file.size > 90000) {
+  if (file.size > 500000) {
     alert("File size exceeds limit");
     return;
   } else {
     const fileReader = new FileReader();
 
     fileReader.onload = () => {
+      resetColorStopsAndPalettes();
       image.onload = () => {
         canvas.width = image.width;
         canvas.height = image.height;
