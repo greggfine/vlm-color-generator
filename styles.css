@@ -53,9 +53,17 @@ body {
 .btn-success:hover {
   background-color: #4bb543;
 }
+.btn-copy {
+  padding: 20px;
+}
 canvas {
   max-width: 300px;
   max-height: 300px;
+}
+.clear-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 .code-box {
   margin-top: 40px;
@@ -71,6 +79,7 @@ canvas {
 .code-btns {
   margin: 40px;
   display: flex;
+  align-items: flex-start;
   justify-content: space-around;
   width: 90%;
 }
@@ -102,15 +111,21 @@ canvas {
 }
 .color-palette {
   font-weight: 900;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  /*👉  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;👈*/
   padding: 0.5rem 0.75rem;
-  background-color: #f4f4f4;
+  /* background-color: #f4f4f4; */
   min-width: fit-content;
   /* position: absolute; */
   /* float: left; */
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   height: 20px;
+  color: #838383;
+  font-weight: 600;
+  /* border: 1px solid #000; */
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .company-selector {
@@ -182,6 +197,8 @@ input[type="file"] {
   margin-left: auto;
   margin-right: auto;
   display: flex;
+  flex-direction: column;
+  /* border: 1px solid #000; */
 }
 
 .removeCodeBtn {
