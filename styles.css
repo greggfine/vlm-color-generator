@@ -89,8 +89,8 @@ canvas {
   border-radius: 20px;
   /*👉  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;👈*/
-  box-shadow: rgb(50 50 93 / 7%) 2px 15px 8px 0px,
-    inset rgb(195 195 195 / 13%) 1px 9px 20px 17px;
+  /* box-shadow: rgb(50 50 93 / 7%) 2px 15px 8px 0px,
+    inset rgb(195 195 195 / 13%) 1px 9px 20px 17px; */
 
   padding: 10px;
   box-sizing: border-box;
@@ -193,7 +193,7 @@ input[type="file"] {
 .palette-wrap {
   margin-top: 20px;
   margin-bottom: 20px;
-  max-width: 900px;
+  /* max-width: 900px; */
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -221,7 +221,7 @@ input[type="file"] {
   background-color: #eee;
   background: linear-gradient(to right, #eee, #ccc);
   padding: 20px;
-  box-shadow: 2px -1px 7px 6px #0000004d;
+  /* box-shadow: 2px -1px 7px 6px #0000004d; */
 }
 .svg-wrap {
   display: flex;
